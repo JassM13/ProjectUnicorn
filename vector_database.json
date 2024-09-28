@@ -1,0 +1,18 @@
+{
+    "Hello!": [
+        "Hi there!",
+        "Hello! How can I assist you today?",
+        "Greetings!"
+    ],
+    "How are you?": [
+        "I'm just a program, but thanks for asking! How about you?"
+    ],
+    "Goodbye!": [
+        "Goodbye! Have a nice day!",
+        "See you later!"
+    ],
+    "What's your name?": [
+        "I'm your friendly AI assistant!",
+        "You can call me AIBot."
+    ]
+}
