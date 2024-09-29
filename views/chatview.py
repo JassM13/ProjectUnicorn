@@ -1,8 +1,8 @@
 from fasthtml.common import *
 from unicornManager import unicornAgent
 
-# Initialize the AI agent
-agent = unicornAgent.AdvancedNLPAgent("BetaUser")
+# Access the singleton AI agent
+agent = unicornAgent.AdvancedNLPAgent()
 
 def chat_view():
     return Div(
@@ -35,15 +35,8 @@ def chat_view():
             ),
             style="display: flex; width: 100%;"
         ),
-
-        # Main chat area styling
-        style="""
-            display: flex; flex-direction: column; justify-content: space-between;
-            padding: 20px; background-color: #000; color: white; 
-            height: 95vh; border-radius: 16px; position: absolute; 
-            right: 20px; top: 20px; left: 100px; bottom: 20px;
-        """,
-        script="""
+        
+        Script("""
             console.log('Script loaded');
             window.onload = function() {
                 console.log('Window loaded');
@@ -51,8 +44,8 @@ def chat_view():
                 const userInput = document.getElementById('user_input');
                 const chatBox = document.getElementById('chat_box');
 
-                sendButton.onclick = function() {
-                    console.log('Send button clicked');
+                function sendMessage() {
+                    console.log('Send button clicked or Enter pressed');
                     const inputText = userInput.value;
                     console.log('User input:', inputText);
                     if (inputText.trim() !== "") {
@@ -83,7 +76,23 @@ def chat_view():
                         })
                         .catch(error => console.error('Error:', error));
                     }
-                };
+                }
+
+                sendButton.onclick = sendMessage;
+
+                userInput.addEventListener('keypress', function(event) {
+                    if (event.key === 'Enter') { // Check for Enter key
+                        event.preventDefault(); // Prevent default form submission
+                        sendMessage(); // Call sendMessage function
+                    }
+                });
             }
+        """),
+        # Main chat area styling
+        style="""
+            display: flex; flex-direction: column; justify-content: space-between;
+            padding: 20px; background-color: #000; color: white; 
+            height: 95vh; border-radius: 16px; position: absolute; 
+            right: 20px; top: 20px; left: 100px; bottom: 20px;
         """
     )

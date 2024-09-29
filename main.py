@@ -1,6 +1,7 @@
 from fasthtml.common import *
 from unicornManager import unicornAgent
-import json
+import traceback
+import asyncio
 
 # Import the views
 from views.components.sidebar import sidebar
@@ -9,16 +10,13 @@ from views.chatview import chat_view
 from views.settings import settings_view
 
 app, rt = fast_app(live=True,
-                   hdrs=(picolink,
-                     Style('@media only screen and (prefers-color-scheme:dark){:root:not([data-theme]){--pico-background-color:#f6cd70;'),
-                     SortableJS('.sortable'))
-                )
+                  hdrs=(picolink,
+                    Style(""":root {--pico-spacing: 0rem;} @media only screen and (prefers-color-scheme:dark){:root:not([data-theme]){--pico-background-color:#f6cd70;"""),
+                    SortableJS('.sortable'))
+               )
 
 # Initialize the AI agent
-agent = unicornAgent.AdvancedNLPAgent("BetaUser")
-
-
-agent.interact("hey")
+agent = unicornAgent.AdvancedNLPAgent()
 
 # Route for dashboard
 @rt("/dashboard")
@@ -50,11 +48,20 @@ def get_settings():
 # Route to handle chat responses
 @rt("/chat_response", methods=["POST"])
 async def chat_response(request):
-    print(request)
-    data = await request.json()
-    user_input = data.get("message", "")
-    response = agent.process_input(user_input)
-    return JsonResponse({"response": response})
+    try:
+        data = await request.json()
+        user_input = data.get("message", "")
+        if not user_input.strip():
+            return JSONResponse({"response": "Please enter a valid message."})
+        
+        # Process input and get response asynchronously
+        loop = asyncio.get_event_loop()
+        response = await loop.run_in_executor(None, agent.process_input, user_input)
+        return JSONResponse({"response": response})
+    except Exception as e:
+        print(f"An error occurred in chat_response: {e}")
+        print(traceback.format_exc())  # This will print the full traceback
+        return JSONResponse({"response": "An error occurred processing your request."}, status_code=500)
 
 # Default route redirects to dashboard
 @rt("/")
