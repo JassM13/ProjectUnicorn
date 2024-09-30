@@ -16,7 +16,7 @@ app, rt = fast_app(live=True,
                )
 
 # Initialize the AI agent
-agent = unicornAgent.AdvancedNLPAgent()
+agent = unicornAgent.agent
 
 # Route for dashboard
 @rt("/dashboard")
@@ -56,7 +56,7 @@ async def chat_response(request):
         
         # Process input and get response asynchronously
         loop = asyncio.get_event_loop()
-        response = await loop.run_in_executor(None, agent.process_input, user_input)
+        response = await loop.run_in_executor(None, agent.generate_response, user_input)
         return JSONResponse({"response": response})
     except Exception as e:
         print(f"An error occurred in chat_response: {e}")

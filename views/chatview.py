@@ -1,9 +1,6 @@
 from fasthtml.common import *
 from unicornManager import unicornAgent
 
-# Access the singleton AI agent
-agent = unicornAgent.AdvancedNLPAgent()
-
 def chat_view():
     return Div(
         # Chat container
