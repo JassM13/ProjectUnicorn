@@ -1,5 +1,4 @@
 from fasthtml.common import *
-from fa6_icons import svgs
 
 def sidebar(active):
     return Div(
@@ -13,14 +12,14 @@ def sidebar(active):
 
             # Navigation icons in the middle (highlight based on active view)
             Div(
-                A(I(svgs.house.solid), href="/dashboard", style=f"display:block; margin: 20px 0; text-align:center; font-size:16px; color:white; opacity: {'1' if active == 'dashboard' else '0.5'};"),
-                A(I(svgs.message.solid), href="/chat", style=f"display:block; margin: 20px 0; text-align:center; font-size:16px; color:white; opacity: {'1' if active == 'chat' else '0.5'};"),
-                A(I(svgs.gear.solid), href="/settings", style=f"display:block; margin: 20px 0; text-align:center; font-size:16px; color:white; opacity: {'1' if active == 'settings' else '0.5'};"),
+                A(Img(src="/assets/svgs/Navigation/House_01.svg", alt="Dashboard"), href="/dashboard", style=f"display:block; margin: 20px 0; text-align:center; font-size:16px; color:white; opacity: {'1' if active == 'dashboard' else '0.5'};"),
+                A(Img(src="/assets/svgs/File/Notebook.svg", alt="Chat"), href="/chat", style=f"display:block; margin: 20px 0; text-align:center; font-size:16px; color:white; opacity: {'1' if active == 'chat' else '0.5'};"),
+                A(Img(src="/assets/svgs/Interface/Settings.svg", alt="Settings"), href="/settings", style=f"display:block; margin: 20px 0; text-align:center; font-size:16px; color:white; opacity: {'1' if active == 'settings' else '0.5'};"),
             ),
 
             # User Profile at the bottom
             Div(
-                A(I(svgs.user.solid), href="/profile", style="display:block; margin-top: 20px 0; text-align:center; font-size:16px; color:white; opacity: 1;"),
+                A(Img(src="/assets/svgs/User/User_Circle.svg", alt="Profile"), href="/profile", style="display:block; margin-top: 20px 0; text-align:center; font-size:16px; color:white; opacity: 1;"),
             ),
 
             # Sidebar Styling

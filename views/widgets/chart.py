@@ -32,6 +32,7 @@ def chart_widget():
                         options: {{
                             responsive: true,
                             maintainAspectRatio: false,
+                            animation: false,
                             plugins: {{
                                 legend: {{
                                     display: false

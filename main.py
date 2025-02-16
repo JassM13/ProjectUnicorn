@@ -1,66 +1,30 @@
 from fasthtml.common import *
-import traceback
-import asyncio
+from views.indexview import index_view
+from views.errors.not_found import not_found
 
-# Import the views
-from views.components.sidebar import sidebar
-from views.dashboardview import dashboard_view
-from views.chatview import chat_view
-from views.settings import settings_view
+# Import route registrations
+#from routes.auth_routes import register_auth_routes
+from routes.dashboard_routes import register_dashboard_routes
+from routes.chat_routes import register_chat_routes
+
+exception_handlers = {404: not_found}
 
 app, rt = fast_app(live=True,
                   hdrs=(picolink,
                     Style(""":root {--pico-spacing: 0rem;} @media only screen and (prefers-color-scheme:dark){:root:not([data-theme]){--pico-background-color:#f6cd70;"""),
-                    SortableJS('.sortable'))
+                    SortableJS('.sortable')),
+                    exception_handlers=exception_handlers
                )
 
-# Route for dashboard
-@rt("/dashboard")
-def get_dashboard():
-    return Div(
-        sidebar(active="dashboard"),
-        Div(dashboard_view(), style="margin-left: 100px;"),
-        style="display:flex;"
-    )
+# Register all routes
+#rt = register_auth_routes(rt)
+rt = register_dashboard_routes(rt)
+rt = register_chat_routes(rt)
 
-# Route for chat
-@rt("/chat")
-def get_chat():
-    return Div(
-        sidebar(active="chat"),
-        Div(chat_view(), style="margin-left: 100px;"),
-        style="display:flex;"
-    )
-
-# Route for settings
-@rt("/settings")
-def get_settings():
-    return Div(
-        sidebar(active="settings"),
-        Div(settings_view(), style="margin-left: 100px;"),
-        style="display:flex;"
-    )
-
-# Route to handle chat responses
-@rt("/chat_response", methods=["POST"])
-async def chat_response(request):
-    try:
-        data = await request.json()
-        user_input = data.get("message", "")
-        if not user_input.strip():
-            return JSONResponse({"response": "Please enter a valid message."})
-        
-        # Process input and get response asynchronously
-        loop = asyncio.get_event_loop()
-    except Exception as e:
-        print(f"An error occurred in chat_response: {e}")
-        print(traceback.format_exc())  # This will print the full traceback
-        return JSONResponse({"response": "An error occurred processing your request."}, status_code=500)
-
-# Default route redirects to dashboard
+# Default route
 @rt("/")
 def get_home():
-    return Redirect("/dashboard")
+    return index_view()
 
 # Serve the app
 serve()
