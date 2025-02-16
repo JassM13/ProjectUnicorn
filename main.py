@@ -1,5 +1,4 @@
 from fasthtml.common import *
-from unicornManager import unicornAgent
 import traceback
 import asyncio
 
@@ -14,9 +13,6 @@ app, rt = fast_app(live=True,
                     Style(""":root {--pico-spacing: 0rem;} @media only screen and (prefers-color-scheme:dark){:root:not([data-theme]){--pico-background-color:#f6cd70;"""),
                     SortableJS('.sortable'))
                )
-
-# Initialize the AI agent
-agent = unicornAgent.agent
 
 # Route for dashboard
 @rt("/dashboard")
@@ -56,8 +52,6 @@ async def chat_response(request):
         
         # Process input and get response asynchronously
         loop = asyncio.get_event_loop()
-        response = await loop.run_in_executor(None, agent.generate_response, user_input)
-        return JSONResponse({"response": response})
     except Exception as e:
         print(f"An error occurred in chat_response: {e}")
         print(traceback.format_exc())  # This will print the full traceback

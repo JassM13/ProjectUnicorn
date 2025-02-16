@@ -1,5 +1,4 @@
 from fasthtml.common import *
-from unicornManager import unicornAgent
 
 def chat_view():
     return Div(
