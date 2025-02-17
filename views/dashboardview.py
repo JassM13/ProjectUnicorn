@@ -1,8 +1,8 @@
 from fasthtml.common import *
-from views.widgets.total_profit import total_profit_widget
-from views.widgets.chart import chart_widget
-from views.widgets.stats import stats_widget
-from views.widgets.progress import progress_widget
+from views.components.widgets.total_profit import total_profit_widget
+from views.components.widgets.chart import chart_widget
+from views.components.widgets.stats import stats_widget
+from views.components.widgets.progress import progress_widget
 
 def dashboard_view():
     return Div(

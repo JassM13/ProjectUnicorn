@@ -5,7 +5,7 @@ from views.settings import settings_view
 
 def register_dashboard_routes(rt):
     @rt("/dashboard")
-    def get_dashboard():
+    def get():
         return Div(
             sidebar(active="dashboard"),
             Div(dashboard_view(), style="margin-left: 100px;"),
@@ -13,7 +13,7 @@ def register_dashboard_routes(rt):
         )
 
     @rt("/settings")
-    def get_settings():
+    def get():
         return Div(
             sidebar(active="settings"),
             Div(settings_view(), style="margin-left: 100px;"),

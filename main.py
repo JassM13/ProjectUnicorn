@@ -3,7 +3,7 @@ from views.indexview import index_view
 from views.errors.not_found import not_found
 
 # Import route registrations
-#from routes.auth_routes import register_auth_routes
+from routes.auth import register_auth_routes
 from routes.dashboard_routes import register_dashboard_routes
 from routes.chat_routes import register_chat_routes
 
@@ -17,7 +17,7 @@ app, rt = fast_app(live=True,
                )
 
 # Register all routes
-#rt = register_auth_routes(rt)
+rt = register_auth_routes(rt)
 rt = register_dashboard_routes(rt)
 rt = register_chat_routes(rt)
 
