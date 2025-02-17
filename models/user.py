@@ -1,8 +1,10 @@
 from dataclasses import dataclass
 from typing import Optional
+import uuid
 
 @dataclass
 class User:
+    user_id: uuid.UUID = uuid.uuid4()
     identifier: str = ""  # Can be either username or email
     username: str = ""
     email: str = ""
@@ -35,4 +37,4 @@ class User:
         if not user.password or len(user.password) < 8:
             errors.append("Password must be at least 8 characters long")
             
-        return (len(errors) == 0, '; '.join(errors) if errors else '')
+        return (len(errors) == 0, '; '.join(errors) if errors else None)

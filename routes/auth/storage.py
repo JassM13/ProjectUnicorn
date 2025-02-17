@@ -1,6 +1,7 @@
 import duckdb
 import hashlib
 import os
+import uuid
 from typing import Optional
 from models.user import User
 
@@ -23,7 +24,7 @@ class UserStorage:
         
         # Import existing data from CSV if it exists
         if os.path.exists(self.file_path):
-            self.conn.execute(f"COPY users FROM '{self.file_path}' (AUTO_DETECT TRUE)")
+            self.conn.execute(f"COPY users FROM '{self.file_path}' (DELIMITER ',', HEADER TRUE, QUOTE '""', NULL_PADDING TRUE)")
     
     def _hash_password(self, password: str) -> str:
         return hashlib.sha256(password.encode()).hexdigest()
@@ -40,10 +41,11 @@ class UserStorage:
             
         try:
             password_hash = self._hash_password(user.password)
+            user.user_id = str(uuid.uuid4())
             self.conn.execute("""
-                INSERT INTO users (username, email, password_hash)
-                VALUES (?, ?, ?)
-            """, [user.username, user.email, password_hash])
+                INSERT INTO users (user_id, username, email, password_hash)
+                VALUES (?, ?, ?, ?)
+            """, [user.user_id, user.username, user.email, password_hash])
             # Save to CSV for persistence
             self.conn.execute(f"COPY users TO '{self.file_path}' (HEADER TRUE)")
             return True
@@ -52,24 +54,24 @@ class UserStorage:
     
     def get_user_by_username(self, username: str) -> Optional[User]:
         result = self.conn.execute("""
-            SELECT username, email, password_hash
+            SELECT user_id, username, email, password_hash
             FROM users
             WHERE username = ?
         """, [username]).fetchone()
         
         if result:
-            return User(identifier=result[0], username=result[0], email=result[1], password="")
+            return User(identifier=result[1], username=result[1], email=result[2], password="", user_id=result[0])
         return None
     
     def get_user_by_email(self, email: str) -> Optional[User]:
         result = self.conn.execute("""
-            SELECT username, email, password_hash
+            SELECT user_id, username, email, password_hash
             FROM users
             WHERE email = ?
         """, [email]).fetchone()
         
         if result:
-            return User(identifier=result[0], username=result[0], email=result[1], password="")
+            return User(identifier=result[1], username=result[1], email=result[2], password="", user_id=result[0])
         return None
     
     def verify_password(self, identifier: str, password: str, is_email: bool = False) -> bool:

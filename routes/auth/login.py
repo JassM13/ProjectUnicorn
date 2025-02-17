@@ -1,7 +1,7 @@
 from fasthtml.common import *
 from dataclasses import dataclass
 from .storage import UserStorage
-from .jwt_auth import generate_token
+from utils.jwt import generate_token
 from views.auth.login import login_view
 from models.user import User
 
@@ -13,7 +13,7 @@ def register_login_routes(rt):
         return login_view()
 
     @rt("/auth/login")
-    def post(user: User):
+    def post(session, user: User):
         is_valid, error = User.validate(user)
         if not is_valid:
             return Div(error, id="result", style="color: red;")
@@ -28,13 +28,8 @@ def register_login_routes(rt):
             if not storage.verify_password(user.username, user.password):
                 return Div("Invalid username or password", id="result", style="color: red;")
             identifier = user.username
-        
-        # Generate JWT token and set it as a cookie
-        print('made it here')
         token = generate_token(identifier)
-        print(token)
-        cookie('auth_token', token, httponly=False, secure=False)  # 24 hours
-        
+        session['auth_token'] = token
         return Redirect('/dashboard')
 
     return rt

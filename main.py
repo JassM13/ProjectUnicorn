@@ -10,6 +10,7 @@ from routes.chat_routes import register_chat_routes
 exception_handlers = {404: not_found}
 
 app, rt = fast_app(live=True,
+                  secret_key='unicorn-project-secret-key-2024',
                   hdrs=(picolink,
                     Style(""":root {--pico-spacing: 0rem;} @media only screen and (prefers-color-scheme:dark){:root:not([data-theme]){--pico-background-color:#f6cd70;"""),
                     SortableJS('.sortable')),
