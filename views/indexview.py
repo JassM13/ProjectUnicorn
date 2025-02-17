@@ -173,7 +173,7 @@ def index_view():
                       style="background: #f6cd70; color: #000; text-decoration: none; \
                              padding: 16px 40px; border-radius: 30px; font-weight: bold; margin-right: 24px; \
                              font-size: 1.1em; letter-spacing: 0.5px;"),
-                    A("Join the Journey", href="/signup", cls="cta-button",
+                    A("Join the Journey", href="/register", cls="cta-button",
                       style="background: transparent; color: #f6cd70; text-decoration: none; padding: 15px 39px; \
                              border-radius: 30px; font-weight: bold; border: 2px solid #f6cd70; font-size: 1.1em; \
                              letter-spacing: 0.5px;"),

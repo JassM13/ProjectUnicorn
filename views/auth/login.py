@@ -7,7 +7,7 @@ def login_view():
         Form(
             Div(
                 Input(
-                    type="email",
+                    type="text",
                     name="email",
                     placeholder="Email",
                     style="width: 100%; padding: 12px; margin-bottom: 16px; border-radius: 8px; \
