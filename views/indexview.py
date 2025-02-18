@@ -61,15 +61,23 @@ def index_view():
             document.addEventListener('DOMContentLoaded', () => {
                 // Three.js Scene Setup
                 const scene = new THREE.Scene();
-                const camera = new THREE.PerspectiveCamera(75, window.innerWidth / window.innerHeight, 0.1, 1000);
+                const container = document.getElementById('three-container');
+                const camera = new THREE.PerspectiveCamera(75, container.clientWidth / container.clientHeight, 0.1, 1000);
                 const renderer = new THREE.WebGLRenderer({ 
                     alpha: true,
                     antialias: true,
                     precision: 'highp'
                 });
                 renderer.setPixelRatio(window.devicePixelRatio);
-                renderer.setSize(window.innerWidth, window.innerHeight);
-                document.getElementById('three-container').appendChild(renderer.domElement);
+                renderer.setSize(container.clientWidth, container.clientHeight);
+                container.appendChild(renderer.domElement);
+
+                // Handle window resize
+                window.addEventListener('resize', () => {
+                    camera.aspect = container.clientWidth / container.clientHeight;
+                    camera.updateProjectionMatrix();
+                    renderer.setSize(container.clientWidth, container.clientHeight);
+                });
 
                 // Create candlestick objects
                 const candlesticks = [];
@@ -181,8 +189,9 @@ def index_view():
                 ),
                 style="text-align: center; position: relative; z-index: 2;"
             ),
-            style="display: flex; justify-content: center; align-items: center; min-height: 100vh; \
-                   background: #000; padding: 20px; position: relative; \
-                   overflow: hidden;"
+            style="""padding: 20px; background-color: #000; color: white; height: 95vh;
+                border-radius: 16px; display: flex; flex-direction: column;
+                justify-content: center; align-items: center; position: absolute;
+                right: 20px; top: 20px; left: 20px; bottom: 20px;"""
         )
     )

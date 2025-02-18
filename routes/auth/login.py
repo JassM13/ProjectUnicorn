@@ -9,7 +9,9 @@ def register_login_routes(rt):
     storage = UserStorage()
 
     @rt("/login")
-    def get():
+    def get(session):
+        if 'auth_token' in session:
+            return Redirect('/dashboard')
         return login_view()
 
     @rt("/auth/login")

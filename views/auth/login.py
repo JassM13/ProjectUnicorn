@@ -8,8 +8,8 @@ def login_view():
             Div(
                 Input(
                     type="text",
-                    name="email",
-                    placeholder="Email",
+                    name="identifier",
+                    placeholder="Email/Username",
                     style="width: 100%; padding: 12px; margin-bottom: 16px; border-radius: 8px; \
                            background: #222; border: 1px solid #333; color: white;"
                 ),

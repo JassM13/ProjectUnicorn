@@ -28,25 +28,25 @@ def dashboard_view():
         Div(
             Div(
                 Div(
-                    Div(total_profit_widget(), cls="dashboard-item", data_swapy_item="profit", style="height: 100%; min-height: 300px;"),
+                    Div(total_profit_widget(), cls="dashboard-item", data_swapy_item="profit", style="height: 100%; min-height: min(300px, 30vh);"),
                     cls="dashboard-slot",
                     data_swapy_slot="profit",
                     style="grid-area: profit;"
                 ),
                 Div(
-                    Div(chart_widget(), cls="dashboard-item", data_swapy_item="chart", style="height: 100%; min-height: 300px;"),
+                    Div(chart_widget(), cls="dashboard-item", data_swapy_item="chart", style="height: 100%; min-height: min(300px, 30vh);"),
                     cls="dashboard-slot",
                     data_swapy_slot="chart",
                     style="grid-area: chart;"
                 ),
                 Div(
-                    Div(stats_widget(), cls="dashboard-item", data_swapy_item="stats", style="height: 100%; min-height: 300px;"),
+                    Div(stats_widget(), cls="dashboard-item", data_swapy_item="stats", style="height: 100%; min-height: min(300px, 30vh);"),
                     cls="dashboard-slot",
                     data_swapy_slot="stats",
                     style="grid-area: stats;"
                 ),
                 Div(
-                    Div(progress_widget(), cls="dashboard-item", data_swapy_item="progress", style="height: 100%; min-height: 300px;"),
+                    Div(progress_widget(), cls="dashboard-item", data_swapy_item="progress", style="height: 100%; min-height: min(300px, 30vh);"),
                     cls="dashboard-slot",
                     data_swapy_slot="progress",
                     style="grid-area: progress;"
@@ -57,7 +57,7 @@ def dashboard_view():
                             'profit chart'
                             'stats progress';
                         grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
-                        grid-template-rows: minmax(300px, 1fr) minmax(300px, 1fr);
+                        grid-template-rows: minmax(min(300px, 30vh), 1fr) minmax(min(300px, 30vh), 1fr);
                         height: 100%;
                         width: 100%;
                     """
