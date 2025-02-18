@@ -14,7 +14,7 @@ def sidebar(active):
             Div(
                 A(Img(src="/assets/svgs/Navigation/House_01.svg", alt="Dashboard"), href="/dashboard", style=f"display:block; margin: 20px 0; text-align:center; font-size:16px; color:white; opacity: {'1' if active == 'dashboard' else '0.5'};"),
                 A(Img(src="/assets/svgs/File/Notebook.svg", alt="Chat"), href="/chat", style=f"display:block; margin: 20px 0; text-align:center; font-size:16px; color:white; opacity: {'1' if active == 'chat' else '0.5'};"),
-                A(Img(src="/assets/svgs/Interface/Settings.svg", alt="Settings"), href="/settings", style=f"display:block; margin: 20px 0; text-align:center; font-size:16px; color:white; opacity: {'1' if active == 'settings' else '0.5'};"),
+                A(Img(src="/assets/svgs/Calendar/Calendar_Days.svg", alt="Calendar"), href="/calendar", style=f"display:block; margin: 20px 0; text-align:center; font-size:16px; color:white; opacity: {'1' if active == 'settings' else '0.5'};"),
             ),
 
             # User Profile at the bottom

@@ -1,7 +1,7 @@
 from fasthtml.common import *
 from views.components.sidebar import sidebar
 from views.dashboardview import dashboard_view
-from views.settings import settings_view
+from views.calendarview import calendar_view
 from routes.auth.decoratedfuncs import login_required
 
 def register_dashboard_routes(rt):
@@ -16,11 +16,11 @@ def register_dashboard_routes(rt):
             style="display:flex;"
         )
 
-    @rt("/settings")
+    @rt("/calendar")
     def get(session):
         return Div(
-            sidebar(active="settings"),
-            Div(settings_view(), style="margin-left: 100px;"),
+            sidebar(active="calendar"),
+            Div(calendar_view(), style="margin-left: 100px;"),
             style="display:flex;"
         )
 
