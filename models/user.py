@@ -16,7 +16,7 @@ class User:
             self.identifier = self.email if self.email else self.username
     
     @classmethod
-    def validate(cls, user) -> tuple[bool, str]:
+    def validate(cls, user) -> tuple[str]:
         """Validate user data and return a tuple of (is_valid, error_message)"""
         errors = []
         
@@ -37,4 +37,4 @@ class User:
         if not user.password or len(user.password) < 8:
             errors.append("Password must be at least 8 characters long")
             
-        return (len(errors) == 0, '; '.join(errors) if errors else None)
+        return '; '.join(errors) if errors else None

@@ -15,7 +15,8 @@ class UserStorage:
         # Create users table if it doesn't exist
         self.conn.execute("""
             CREATE TABLE IF NOT EXISTS users (
-                username VARCHAR PRIMARY KEY,
+                user_id VARCHAR UNIQUE PRIMARY KEY,
+                username VARCHAR UNIQUE,
                 email VARCHAR UNIQUE,
                 password_hash VARCHAR,
                 created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
@@ -24,7 +25,22 @@ class UserStorage:
         
         # Import existing data from CSV if it exists
         if os.path.exists(self.file_path):
-            self.conn.execute(f"COPY users FROM '{self.file_path}' (DELIMITER ',', HEADER TRUE, QUOTE '""', NULL_PADDING TRUE)")
+            try:
+                # Configure CSV import with explicit parameters
+                self.conn.execute(f"""COPY users FROM '{self.file_path}' (
+                    DELIMITER ',',
+                    HEADER TRUE,
+                    QUOTE '"',
+                    ESCAPE '"',
+                    NULL 'NULL',
+                    IGNORE_ERRORS FALSE
+                )"""
+                )
+            except Exception as e:
+                # If file doesn't exist or is empty, create it
+                os.makedirs(os.path.dirname(self.file_path), exist_ok=True)
+                if not os.path.exists(self.file_path):
+                    self.conn.execute(f"COPY users TO '{self.file_path}' (HEADER TRUE)")
     
     def _hash_password(self, password: str) -> str:
         return hashlib.sha256(password.encode()).hexdigest()

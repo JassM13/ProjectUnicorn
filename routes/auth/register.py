@@ -14,12 +14,9 @@ def register_register_routes(rt):
     @rt("/auth/register")
     def post(user: User):
         errors = User.validate(user)
+        print(errors)
         if errors:
-            return Div(
-                Ul(*[Li(error) for error in errors]),
-                id="result",
-                style="color: red;"
-            )
+            return Div(errors, id="result", style="color: red;")
         
         if not storage.create_user(user):
             return Div(

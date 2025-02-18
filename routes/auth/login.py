@@ -14,9 +14,9 @@ def register_login_routes(rt):
 
     @rt("/auth/login")
     def post(session, user: User):
-        is_valid, error = User.validate(user)
-        if not is_valid:
-            return Div(error, id="result", style="color: red;")
+        errors = User.validate(user)
+        if errors:
+            return Div(errors, id="result", style="color: red;")
         
         print(user.identifier)
         # Try to verify password with either username or email
