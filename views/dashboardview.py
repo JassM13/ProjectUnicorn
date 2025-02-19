@@ -60,12 +60,14 @@ def dashboard_view():
                         grid-template-rows: minmax(min(300px, 30vh), 1fr) minmax(min(300px, 30vh), 1fr);
                         height: 100%;
                         width: 100%;
+                        border-radius: 16px;
+                        overflow: hidden;
                     """
             ),
             style="""padding: 24px; background-color: #000;
                     color: white; height: 95vh; max-height: 95vh; border-radius: 16px;
                     position: absolute; right: 24px; top: 20px;
-                    left: 100px; bottom: 24px; overflow: auto;
+                    left: 100px; bottom: 24px; overflow: hidden;
                 """
         )
     )

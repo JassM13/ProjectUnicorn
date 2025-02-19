@@ -9,6 +9,7 @@ class User:
     username: str = ""
     email: str = ""
     password: str = ""
+    sub_account_id: Optional[uuid.UUID] = None
     
     def __post_init__(self):
         # Set identifier based on username or email if not provided

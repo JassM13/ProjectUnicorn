@@ -66,5 +66,5 @@ def chart_widget():
             """),
             style="height: 100%; width: 100%;"
         ),
-        style="background-color: #000; border-radius: 12px; height: 100%; overflow: hidden;"
+        style="background-color: #000; height: 100%; overflow: hidden;"
     )

@@ -42,5 +42,5 @@ def progress_widget():
             ),
             style="padding: min(16px, 3vh) min(24px, 4vw); height: 100%; display: flex; flex-direction: column;"
         ),
-        style="background-color: #222; border-radius: 12px; height: 100%; overflow: hidden;"
+        style="background-color: #000; height: 100%; overflow: hidden;"
     )

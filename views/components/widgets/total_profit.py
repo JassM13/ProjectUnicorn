@@ -19,9 +19,9 @@ def total_profit_widget():
                     P("$2,850.40", style="margin: 0; color: #00E676; font-size: clamp(1rem, 2vw, 1.2rem); font-weight: 600;"),
                     style="text-align: center; flex: 1; min-width: 0; padding: 16px; background: rgba(255, 255, 255, 0.05); border-radius: 8px; transition: transform 0.2s ease-in-out; cursor: pointer; &:hover { transform: translateY(-2px); }"
                 ),
-                style="display: flex; justify-content: space-around; margin-top: 16px; gap: 16px; flex-wrap: wrap;"
+                style="padding: 20px; display: flex; justify-content: space-around; margin-top: 16px; gap: 16px; flex-wrap: wrap;"
             ),
-            style="padding: 24px; height: 100%; display: flex; flex-direction: column; justify-content: space-between; background: linear-gradient(135deg, rgba(255, 255, 255, 0.05) 0%, rgba(255, 255, 255, 0) 100%);"
+            style="height: 100%; display: flex; flex-direction: column; justify-content: space-between; background: linear-gradient(135deg, rgba(255, 0, 0, 0.01) 0%, rgba(255, 0, 0, 0.1) 100%);"
         ),
-        style="background-color: #1a1a1a; border-radius: 16px; height: 100%; overflow: hidden; box-shadow: 0 4px 24px rgba(0, 0, 0, 0.2); transition: transform 0.3s ease-in-out; &:hover { transform: translateY(-4px); }"
+        style="background-color: #000; height: 100%; overflow: hidden; box-shadow: 0 4px 24px rgba(0, 0, 0, 0.2); transition: transform 0.3s ease-in-out; &:hover { transform: translateY(-4px); }"
     )
