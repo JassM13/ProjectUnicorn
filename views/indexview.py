@@ -17,15 +17,18 @@ def index_view():
             }
             .hero-text {
                 color: #f6cd70;
+                font-size: 4.5em;
             }
             .cta-button {
                 transition: all 0.3s ease;
                 position: relative;
                 overflow: hidden;
+                font-size: 1.1em;
+                letter-spacing: 0.5px;
             }
             .cta-button:hover {
                 transform: translateY(-3px);
-                box-shadow: 0 10px 20px rgba(246, 205, 112, 0.3);
+                box-shadow: 0 10px 20px rgba(246,205,112,0.3);
             }
             .cta-button::before {
                 content: '';
@@ -55,6 +58,25 @@ def index_view():
                 font-size: 2.5em;
                 color: #f6cd70;
                 margin-bottom: 20px;
+            }
+            /* Mobile responsiveness overrides */
+            @media (max-width: 768px) {
+                .main-container {
+                    border-radius: 0 !important;
+                    height: auto !important;
+                    top: 0 !important;
+                    left: 0 !important;
+                    right: 0 !important;
+                    bottom: 0 !important;
+                    padding: 10px !important;
+                }
+                .hero-text {
+                    font-size: 3em !important;
+                }
+                .cta-button {
+                    font-size: 1em !important;
+                    padding: 12px 30px !important;
+                }
             }
         """),
         Script("""
@@ -128,9 +150,6 @@ def index_view():
                     createCandlestick();
                 }
                 
-                // Remove the interval that creates new candlesticks
-                // setInterval(createCandlestick, 3000);
-
                 // Enhanced lighting setup
                 const mainLight = new THREE.PointLight(0xffffff, 1.5, 100);
                 mainLight.position.set(10, 10, 10);
@@ -153,42 +172,23 @@ def index_view():
                     renderer.render(scene, camera);
                 }
                 animate();
-
-                // Particle effect
-                // function createParticle() {
-                //     const particle = document.createElement('div');
-                //     particle.className = 'particle';
-                //     particle.style.width = '8px';
-                //     particle.style.height = '8px';
-                //     particle.style.background = '#333333';
-                //     particle.style.borderRadius = '50%';
-                //     particle.style.left = Math.random() * 100 + 'vw';
-                //     particle.style.top = Math.random() * 100 + 'vh';
-                //     document.body.appendChild(particle);
-                //     setTimeout(() => particle.remove(), 6000);
-                // }
-
-                // setInterval(createParticle, 200);
             });
         """),
         Div(
             Div(id="three-container", style="position: absolute; top: 0; left: 0; width: 100%; height: 100%; z-index: 1;"),
             Div(
-                H1("Project Unicorn", cls="hero-text", style="font-size: 4.5em; margin-bottom: 24px; font-weight: 800; letter-spacing: -1px;"),
+                H1("Project Unicorn", cls="hero-text", style="margin-bottom: 24px; font-weight: 800; letter-spacing: -1px;"),
                 P("Where Innovation Meets Intelligence", style="color: white; font-size: 1.5em; margin-bottom: 40px; text-shadow: 0 2px 10px rgba(0,0,0,0.3);"),
                 Div(
                     A("Experience the Magic", href="/login", cls="cta-button", 
-                      style="background: #f6cd70; color: #000; text-decoration: none; \
-                             padding: 16px 40px; border-radius: 30px; font-weight: bold; margin-right: 24px; \
-                             font-size: 1.1em; letter-spacing: 0.5px;"),
+                      style="background: #f6cd70; color: #000; text-decoration: none; padding: 16px 40px; border-radius: 30px; font-weight: bold; margin-right: 24px;"),
                     A("Join the Journey", href="/register", cls="cta-button",
-                      style="background: transparent; color: #f6cd70; text-decoration: none; padding: 15px 39px; \
-                             border-radius: 30px; font-weight: bold; border: 2px solid #f6cd70; font-size: 1.1em; \
-                             letter-spacing: 0.5px;"),
+                      style="background: transparent; color: #f6cd70; text-decoration: none; padding: 15px 39px; border-radius: 30px; font-weight: bold; border: 2px solid #f6cd70;"),
                     style="display: flex; gap: 20px; justify-content: center;"
                 ),
                 style="text-align: center; position: relative; z-index: 2;"
             ),
+            cls="main-container",
             style="""padding: 20px; background-color: #000; color: white; height: 95vh;
                 border-radius: 16px; display: flex; flex-direction: column;
                 justify-content: center; align-items: center; position: absolute;

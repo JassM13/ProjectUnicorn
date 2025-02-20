@@ -21,7 +21,7 @@ def chart_widget():
                             data: {data},
                             fill: true,
                             backgroundColor: 'rgba(246, 205, 112, 0.2)',
-                            borderColor: '#f6cd70',
+                            borderColor: 'rgba(246,205,112, 0.6)',
                             tension: 0.4
                         }}]
                     }};

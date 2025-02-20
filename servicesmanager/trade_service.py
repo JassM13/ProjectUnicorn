@@ -1,40 +1,73 @@
-import csv
 import os
+import duckdb
 from datetime import datetime
 from typing import List, Dict, Optional
+from uuid import UUID
 
 class TradeService:
     def __init__(self):
         self.trades_file = os.path.join('datastorage', 'trades.csv')
-        self._ensure_trades_file_exists()
+        self.conn = duckdb.connect(':memory:')
+        self._init_database()
     
-    def _ensure_trades_file_exists(self):
-        """Ensure trades.csv exists with headers"""
-        if not os.path.exists(self.trades_file):
-            with open(self.trades_file, 'w', newline='') as f:
-                writer = csv.writer(f)
-                writer.writerow(['id', 'user_id', 'symbol', 'entry_price', 'exit_price', 
-                                'position_size', 'entry_date', 'exit_date', 'profit_loss', 
-                                'trade_type', 'risk_reward_ratio'])
+    def _init_database(self):
+        """Initialize DuckDB database and import existing data"""
+        self.conn.execute("""
+            CREATE TABLE IF NOT EXISTS trades (
+                id VARCHAR,
+                user_id VARCHAR,
+                symbol VARCHAR,
+                entry_price DOUBLE,
+                exit_price DOUBLE,
+                position_size DOUBLE,
+                entry_date TIMESTAMP,
+                exit_date TIMESTAMP,
+                profit_loss DOUBLE,
+                trade_type VARCHAR,
+                risk_reward_ratio DOUBLE
+            )
+        """)
+        
+        if os.path.exists(self.trades_file):
+            try:
+                self.conn.execute(f"""COPY trades FROM '{self.trades_file}' (
+                    DELIMITER ',',
+                    HEADER TRUE,
+                    QUOTE '"',
+                    ESCAPE '"',
+                    NULL 'NULL',
+                    IGNORE_ERRORS FALSE
+                )"""
+                )
+            except Exception:
+                # If file doesn't exist or is empty, create it
+                os.makedirs(os.path.dirname(self.trades_file), exist_ok=True)
+                if not os.path.exists(self.trades_file):
+                    self.conn.execute(f"COPY trades TO '{self.trades_file}' (HEADER TRUE)")
     
     def add_trade(self, user_id: str, trade_data: Dict) -> bool:
-        """Add a new trade to the CSV file"""
+        """Add a new trade to the database"""
         try:
-            with open(self.trades_file, 'a', newline='') as f:
-                writer = csv.writer(f)
-                writer.writerow([
-                    trade_data.get('id'),
-                    user_id,
-                    trade_data.get('symbol'),
-                    trade_data.get('entry_price'),
-                    trade_data.get('exit_price'),
-                    trade_data.get('position_size'),
-                    trade_data.get('entry_date'),
-                    trade_data.get('exit_date'),
-                    trade_data.get('profit_loss'),
-                    trade_data.get('trade_type'),
-                    trade_data.get('risk_reward_ratio')
-                ])
+            self.conn.execute("""
+                INSERT INTO trades (id, user_id, symbol, entry_price, exit_price, 
+                                  position_size, entry_date, exit_date, profit_loss, 
+                                  trade_type, risk_reward_ratio)
+                VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
+            """, [
+                trade_data.get('id'),
+                user_id,
+                trade_data.get('symbol'),
+                trade_data.get('entry_price'),
+                trade_data.get('exit_price'),
+                trade_data.get('position_size'),
+                trade_data.get('entry_date'),
+                trade_data.get('exit_date'),
+                trade_data.get('profit_loss'),
+                trade_data.get('trade_type'),
+                trade_data.get('risk_reward_ratio')
+            ])
+            # Save to CSV for persistence
+            self.conn.execute(f"COPY trades TO '{self.trades_file}' (HEADER TRUE)")
             return True
         except Exception as e:
             print(f"Error adding trade: {e}")
@@ -42,14 +75,18 @@ class TradeService:
     
     def get_user_trades(self, user_id: str) -> List[Dict]:
         """Get all trades for a specific user"""
-        trades = []
         try:
-            with open(self.trades_file, 'r') as f:
-                reader = csv.DictReader(f)
-                for row in reader:
-                    if row['user_id'] == user_id:
-                        trades.append(row)
-            return trades
+            result = self.conn.execute("""
+                SELECT * FROM trades
+                WHERE user_id = ?
+                ORDER BY entry_date DESC
+            """, [user_id]).fetchall()
+            
+            columns = ['id', 'user_id', 'symbol', 'entry_price', 'exit_price',
+                      'position_size', 'entry_date', 'exit_date', 'profit_loss',
+                      'trade_type', 'risk_reward_ratio']
+            
+            return [dict(zip(columns, row)) for row in result]
         except Exception as e:
             print(f"Error getting trades: {e}")
             return []
