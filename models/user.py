@@ -4,7 +4,7 @@ import uuid
 
 @dataclass
 class User:
-    user_id: uuid.UUID = uuid.uuid4()
+    user_id: str = str(uuid.uuid4())
     identifier: str = ""  # Can be either username or email
     username: str = ""
     email: str = ""

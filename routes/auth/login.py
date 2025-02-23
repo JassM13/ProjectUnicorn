@@ -10,7 +10,7 @@ def register_login_routes(rt):
 
     @rt("/login")
     def get(session):
-        if 'auth_token' in session:
+        if 'AuthToken' in session:
             return Redirect('/dashboard')
         return login_view()
 
@@ -30,8 +30,8 @@ def register_login_routes(rt):
             if not storage.verify_password(user.username, user.password):
                 return Div("Invalid username or password", id="result", style="color: red;")
             identifier = user.username
-        token = generate_token(identifier)
-        session['auth_token'] = token
+        token = generate_token(user.user_id)
+        session['AuthToken'] = token
         return Redirect('/dashboard')
 
     return rt

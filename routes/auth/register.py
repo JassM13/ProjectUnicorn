@@ -9,7 +9,7 @@ def register_register_routes(rt):
 
     @rt("/register")
     def get(session):
-        if 'auth_token' in session:
+        if 'AuthToken' in session:
             return Redirect('/dashboard')
         return register_view()
 

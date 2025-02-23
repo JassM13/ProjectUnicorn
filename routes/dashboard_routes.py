@@ -2,16 +2,14 @@ from fasthtml.common import *
 from views.components.sidebar import sidebar
 from views.dashboardview import dashboard_view
 from views.calendarview import calendar_view
-from routes.auth.decoratedfuncs import login_required
+from middleware.authorized_request import authorized_request
 from middleware.device_restriction import restrict_small_devices
 
 def register_dashboard_routes(rt):
     @rt("/dashboard")
-    @login_required
+    @authorized_request
     @restrict_small_devices()
     def get(session):
-        if 'auth_token' not in session:
-            return Redirect('/login')
         return Div(
             sidebar(active="dashboard"),
             Div(dashboard_view(), style="margin-left: 100px;"),

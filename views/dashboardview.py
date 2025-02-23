@@ -12,7 +12,6 @@ def dashboard_view():
                 const container = document.querySelector('.dashboard-container');
                 window.swapy = Swapy.createSwapy(container, {
                     draggable: true,
-                    resizable: true,
                     animation: 'dynamic'
                 });
 
@@ -34,6 +33,12 @@ def dashboard_view():
                     style="grid-area: profit;"
                 ),
                 Div(
+                    Div(progress_widget(), cls="dashboard-item", data_swapy_item="progress", style="height: 100%; min-height: min(300px, 30vh);"),
+                    cls="dashboard-slot",
+                    data_swapy_slot="progress",
+                    style="grid-area: progress;"
+                ),
+                Div(
                     Div(chart_widget(), cls="dashboard-item", data_swapy_item="chart", style="height: 100%; min-height: min(300px, 30vh);"),
                     cls="dashboard-slot",
                     data_swapy_slot="chart",
@@ -45,17 +50,11 @@ def dashboard_view():
                     data_swapy_slot="stats",
                     style="grid-area: stats;"
                 ),
-                Div(
-                    Div(progress_widget(), cls="dashboard-item", data_swapy_item="progress", style="height: 100%; min-height: min(300px, 30vh);"),
-                    cls="dashboard-slot",
-                    data_swapy_slot="progress",
-                    style="grid-area: progress;"
-                ),
                 cls="dashboard-container",
                 style="""display: grid; gap: 12px;
                         grid-template-areas:
-                            'profit chart'
-                            'stats progress';
+                            'profit progress'
+                            'chart stats';
                         grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
                         grid-template-rows: minmax(min(300px, 30vh), 1fr) minmax(min(300px, 30vh), 1fr);
                         height: 100%;
