@@ -1,4 +1,5 @@
 from fasthtml.common import *
+from servicesmanager.trade_service import TradeService
 
 def trades_view():
     return Div(
@@ -8,6 +9,7 @@ def trades_view():
                 const modal = document.getElementById('trade_modal');
                 const modalOverlay = document.getElementById('modal_overlay');
                 const cancelButton = document.getElementById('cancel_trade_button');
+                const tradeForm = document.getElementById('trade_form');
 
                 function showModal() {
                     modalOverlay.style.opacity = '1';
@@ -23,6 +25,7 @@ def trades_view():
                     modal.style.opacity = '0';
                     modal.style.visibility = 'hidden';
                     modal.style.transform = 'translate(-50%, -50%) scale(0.8)';
+                    tradeForm.reset();
                 }
 
                 addButton.addEventListener('click', showModal);
@@ -36,7 +39,7 @@ def trades_view():
         Div(
             # Left side - Trades List
             Div(
-                H2("Your Trades", style="margin: 0 0 20px 0; color: #f6cd70;"),
+                H2("Trades", style="margin: 0;"),
                 Div(
                     id="trades_list",
                     style="""
@@ -50,7 +53,6 @@ def trades_view():
                     """
                 ),
                 id="trades_list_container",
-                style="flex: 1; padding: 20px; background-color: #111; border-radius: 12px; position: relative; width: 100%; transition: width 0.3s ease;"
             ),
             
             # Modal Overlay
@@ -77,17 +79,55 @@ def trades_view():
             Div(
                 H2("Add New Trade", style="margin: 0 0 20px 0; color: #f6cd70;"),
                 Form(
-                    Input(type="text", name="symbol", placeholder="Symbol", style="width: 100%; padding: 12px; margin-bottom: 16px; border-radius: 8px; background: #222; border: 1px solid #333; color: white;"),
-                    Input(type="number", name="entry_price", placeholder="Entry Price", style="width: 100%; padding: 12px; margin-bottom: 16px; border-radius: 8px; background: #222; border: 1px solid #333; color: white;"),
-                    Input(type="number", name="exit_price", placeholder="Exit Price", style="width: 100%; padding: 12px; margin-bottom: 16px; border-radius: 8px; background: #222; border: 1px solid #333; color: white;"),
-                    Input(type="number", name="position_size", placeholder="Position Size", style="width: 100%; padding: 12px; margin-bottom: 16px; border-radius: 8px; background: #222; border: 1px solid #333; color: white;"),
+                    Select(
+                        Option("Futures", value="futures", selected=True),
+                        Option("Options", value="options"),
+                        Option("Stocks", value="stocks"),
+                        name="instrument_type",
+                        required=True,
+                        style="width: 100%; padding: 12px; margin-bottom: clamp(8px, 1.5vh, 16px); border-radius: 8px; background: #222; border: 1px solid #333; color: white;"
+                    ),
+                    Input(type="text", name="symbol", placeholder="Contract Name", required=True, style="width: 100%; padding: clamp(8px, 1.5vh, 12px); margin-bottom: clamp(8px, 1.5vh, 16px); border-radius: 8px; background: #222; border: 1px solid #333; color: white;"),
+                    Div(
+                        Div(
+                            Input(type="datetime-local", name="entered_at", required=True, style="width: 100%; padding: clamp(8px, 1.5vh, 12px); border-radius: 8px; background: #222; border: 1px solid #333; color: white;"),
+                            style="flex: 1; margin-right: 8px;"
+                        ),
+                        Div(
+                            Input(type="datetime-local", name="exited_at", required=True, style="width: 100%; padding: clamp(8px, 1.5vh, 12px); border-radius: 8px; background: #222; border: 1px solid #333; color: white;"),
+                            style="flex: 1;"
+                        ),
+                        style="display: flex; margin-bottom: clamp(8px, 1.5vh, 16px);"
+                    ),
+                    Input(type="hidden", name="trade_day", required=True),
                     Select(
                         Option("Long", value="long"),
                         Option("Short", value="short"),
-                        name="trade_type",
-                        style="width: 100%; padding: 12px; margin-bottom: 16px; border-radius: 8px; background: #222; border: 1px solid #333; color: white;"
+                        name="type",
+                        required=True,
+                        style="width: 100%; padding: clamp(8px, 1.5vh, 12px); margin-bottom: clamp(8px, 1.5vh, 16px); border-radius: 8px; background: #222; border: 1px solid #333; color: white;"
                     ),
-                    Textarea(name="notes", placeholder="Trade Notes", style="width: 100%; padding: 12px; margin-bottom: 16px; border-radius: 8px; background: #222; border: 1px solid #333; color: white; min-height: 100px;"),
+                    Div(
+                        Div(
+                            Input(type="number", name="entry_price", placeholder="Entry Price", step="0.01", style="width: 100%; padding: clamp(8px, 1.5vh, 12px); border-radius: 8px; background: #222; border: 1px solid #333; color: white;"),
+                            style="flex: 1; margin-right: 8px;"
+                        ),
+                        Div(
+                            Input(type="number", name="exit_price", placeholder="Exit Price", step="0.01", style="width: 100%; padding: clamp(8px, 1.5vh, 12px); border-radius: 8px; background: #222; border: 1px solid #333; color: white;"),
+                            style="flex: 1;"
+                        ),
+                        style="display: flex; margin-bottom: clamp(8px, 1.5vh, 16px);"
+                    ),
+                    Input(type="number", name="size", placeholder="Position Size", step="0.01", style="width: 100%; padding: clamp(8px, 1.5vh, 12px); margin-bottom: clamp(8px, 1.5vh, 16px); border-radius: 8px; background: #222; border: 1px solid #333; color: white;"),
+                    Textarea(name="notes", placeholder="Trade Notes", style="width: 100%; padding: clamp(8px, 1.5vh, 12px); margin-bottom: clamp(8px, 1.5vh, 16px); border-radius: 8px; background: #222; border: 1px solid #333; color: white; min-height: clamp(60px, 10vh, 100px);"),
+                    Div(
+                        id="trade_form_alert",
+                        style="""
+                            color: white;
+                            border-radius: 8px;
+                            padding: 12px;
+                        """
+                    ),
                     Div(
                         Button(
                             "Cancel",
@@ -102,26 +142,62 @@ def trades_view():
                         ),
                         style="display: flex; justify-content: flex-end;"
                     ),
-                    style="width: 100%;"
+                    Script("""
+                        document.addEventListener('DOMContentLoaded', function() {
+                            const now = new Date();
+                            const enteredAtInput = document.querySelector('input[name="entered_at"]');
+                            const exitedAtInput = document.querySelector('input[name="exited_at"]');
+                            const tradeDayInput = document.querySelector('input[name="trade_day"]');
+                            const tradeForm = document.getElementById('trade_form');
+                            const alertDiv = document.getElementById('trade_form_alert');
+                            
+                            function formatDateTime(date) {
+                                return date.toISOString().slice(0, 16);
+                            }
+                            
+                            // Set initial values
+                            enteredAtInput.value = formatDateTime(now);
+                            exitedAtInput.value = formatDateTime(now);
+                            
+                            // Update trade_day when exited_at changes
+                            exitedAtInput.addEventListener('change', function() {
+                                const exitDate = new Date(this.value);
+                                tradeDayInput.value = exitDate.toISOString().split('T')[0];
+                            });
+                            
+                            // Trigger initial trade_day update
+                            tradeDayInput.value = now.toISOString().split('T')[0];
+                        });
+                    """),
+                    Div(
+                        id="trade_form_error",
+                    ),
+                    id="trade_form",
+                    style="width: 100%;",
+                    hx_post="/api/trades",
+                    hx_target="#trade_form_alert",
+                    hx_swap="innerHTML"
                 ),
                 id="trade_modal",
                 style="""
                     background: #111;
-                    padding: 32px;
+                    padding: clamp(16px, 3vh, 32px);
                     border-radius: 16px;
                     width: 90%;
                     max-width: 600px;
-                    max-height: 90vh;
+                    height: auto;
+                    max-height: 85vh;
                     position: fixed;
                     left: 50%;
                     top: 50%;
                     transform: translate(-50%, -50%) scale(0.8);
                     transition: all 0.3s ease;
                     box-shadow: 0 8px 32px rgba(0, 0, 0, 0.3);
-                    overflow-y: auto;
                     z-index: 1001;
                     opacity: 0;
                     visibility: hidden;
+                    display: flex;
+                    flex-direction: column;
                 """
             ),
             
@@ -131,8 +207,8 @@ def trades_view():
                 id="add_trade_button",
                 style="""
                     position: fixed;
-                    bottom: 50px;
-                    right: 50px;
+                    bottom: 40px;
+                    right: 40px;
                     height: 50px;
                     width: auto;
                     padding: 0 24px;
@@ -150,7 +226,7 @@ def trades_view():
         style="""
             display: flex;
             flex-direction: column;
-            padding: 20px;
+            padding: 30px;
             background-color: #000;
             color: white;
             height: 95vh;

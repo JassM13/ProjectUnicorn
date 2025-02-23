@@ -157,7 +157,7 @@ def calendar_view():
             background-color: #000; 
             color: white; 
             height: 95vh; 
-            border-radius: 24px; 
+            border-radius: 16px; 
             position: absolute; 
             right: 20px; 
             top: 20px; 

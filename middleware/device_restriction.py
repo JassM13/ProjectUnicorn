@@ -8,11 +8,11 @@ def restrict_small_devices(min_width=768):
             return Div(
                 Script(f"""
                     if (window.innerWidth < {min_width}) {{
-                        window.location.href = '/error/device-restricted';
+                        window.location.href = '/device-restricted';
                     }}
                     window.addEventListener('resize', function() {{
                         if (window.innerWidth < {min_width}) {{
-                            window.location.href = '/error/device-restricted';
+                            window.location.href = '/device-restricted';
                         }}
                     }});
                 """),
