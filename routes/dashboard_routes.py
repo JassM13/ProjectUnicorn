@@ -17,6 +17,8 @@ def register_dashboard_routes(rt):
         )
 
     @rt("/calendar")
+    @authorized_request
+    @restrict_small_devices()
     def get(session):
         return Div(
             sidebar(active="calendar"),

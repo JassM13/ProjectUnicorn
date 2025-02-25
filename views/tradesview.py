@@ -1,5 +1,4 @@
 from fasthtml.common import *
-from servicesmanager.trade_service import TradeService
 
 def trades_view():
     return Div(

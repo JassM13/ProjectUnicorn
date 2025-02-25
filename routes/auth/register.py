@@ -1,11 +1,11 @@
 from fasthtml.common import *
 from dataclasses import dataclass
-from .storage import UserStorage
+from profitpath_managers.user_manager.user_authentication_service import UserAuthenticationService
 from views.auth.register import register_view
 from models.user import User
 
 def register_register_routes(rt):
-    storage = UserStorage()
+    auth_service = UserAuthenticationService()
 
     @rt("/register")
     def get(session):
@@ -20,7 +20,7 @@ def register_register_routes(rt):
         if errors:
             return Div(errors, id="result", style="color: red;")
         
-        if not storage.create_user(user):
+        if not auth_service.create_user(user):
             return Div(
                 "Username or email already exists",
                 id="result",

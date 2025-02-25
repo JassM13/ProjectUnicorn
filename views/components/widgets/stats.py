@@ -1,9 +1,7 @@
 from fasthtml.common import *
-from servicesmanager.trade_service import TradeService
 
 def stats_widget(user_id=None):
-    trade_service = TradeService()
-    stats = trade_service.calculate_stats(user_id) if user_id else {
+    stats = {
         'win_rate': 68.5,
         'avg_position_size': 5420,
         'risk_reward': 2.5,

@@ -1,12 +1,12 @@
 from fasthtml.common import *
 from dataclasses import dataclass
-from .storage import UserStorage
+from profitpath_managers.user_manager.user_authentication_service import UserAuthenticationService
 from utils.jwt import generate_token
 from views.auth.login import login_view
 from models.user import User
 
 def register_login_routes(rt):
-    storage = UserStorage()
+    auth_service = UserAuthenticationService()
 
     @rt("/login")
     def get(session):
@@ -23,11 +23,11 @@ def register_login_routes(rt):
         print(user.identifier)
         # Try to verify password with either username or email
         if '@' in user.identifier:
-            if not storage.verify_password(user.email, user.password, is_email=True):
+            if not auth_service.verify_password(user.identifier, user.password, is_email=True):
                 return Div("Invalid email or password", id="result", style="color: red;")
             identifier = user.email
         else:
-            if not storage.verify_password(user.username, user.password):
+            if not auth_service.verify_password(user.identifier, user.password):
                 return Div("Invalid username or password", id="result", style="color: red;")
             identifier = user.username
         token = generate_token(user.user_id)
