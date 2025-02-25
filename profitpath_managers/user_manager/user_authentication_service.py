@@ -1,18 +1,16 @@
 import hashlib
-import os
 import uuid
 from typing import Optional
 from models.user import User
 from database.postgresql_manager import PostgresManager
 
 class UserAuthenticationService:
-    def __init__(self, file_path: str = 'datastorage/users.csv'):
-        self.file_path = file_path
+    def __init__(self):
         self.pg_manager = PostgresManager.getInstance()
         self._init_database()
     
     def _init_database(self):
-        """Initialize PostgreSQL database and import existing data"""
+        """Initialize PostgreSQL database"""
         conn = self.pg_manager.get_connection()
         try:
             with conn.cursor() as cur:
@@ -25,22 +23,6 @@ class UserAuthenticationService:
                         created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
                     )
                 """)
-                
-                if os.path.exists(self.file_path):
-                    try:
-                        with open(self.file_path, 'r') as f:
-                            cur.copy_expert(
-                                "COPY users FROM STDIN WITH (FORMAT CSV, HEADER TRUE)",
-                                f
-                            )
-                    except Exception:
-                        os.makedirs(os.path.dirname(self.file_path), exist_ok=True)
-                        if not os.path.exists(self.file_path):
-                            with open(self.file_path, 'w') as f:
-                                cur.copy_expert(
-                                    "COPY users TO STDIN WITH (FORMAT CSV, HEADER TRUE)",
-                                    f
-                                )
                 conn.commit()
         finally:
             self.pg_manager.release_connection(conn)
@@ -59,7 +41,9 @@ class UserAuthenticationService:
                 """, [user.username, user.email])
                 existing_user = cur.fetchone()
                 
+                print(f"Existing user: {existing_user}")
                 if existing_user:
+                    print(f"User already exists: {user.username}")
                     return False
                     
                 password_hash = self._hash_password(user.password)
@@ -69,15 +53,11 @@ class UserAuthenticationService:
                     VALUES (%s, %s, %s, %s)
                 """, [user.user_id, user.username, user.email, password_hash])
                 
-                # Save to CSV for persistence
-                with open(self.file_path, 'w') as f:
-                    cur.copy_expert(
-                        "COPY users TO STDIN WITH (FORMAT CSV, HEADER TRUE)",
-                        f
-                    )
                 conn.commit()
+                print(f"User created successfully: {user.username}")
                 return True
-        except Exception:
+        except Exception as e:
+            print(f"Error creating user: {str(e)}")
             conn.rollback()
             return False
         finally:
