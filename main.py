@@ -5,7 +5,7 @@ from views.error_views.not_found import not_found
 from views.error_views.device_restriction import device_restriction
 
 # Import route registrations
-from routes.auth import register_auth_routes
+from routes.auth_routes import register_auth_routes
 from routes.dashboard_routes import register_dashboard_routes
 from routes.trades_routes import register_trades_routes
 from routes.exceptions_routes import register_exception_routes
