@@ -10,8 +10,6 @@ def generate_token(uuid: any) -> str:
     """Generate a new JWT token for a user"""
     payload = {
         'uuid': uuid,
-        #'exp': datetime.utcnow() + JWT_EXPIRATION_DELTA,
-        'iat': datetime.utcnow()
     }
     return jwt.encode(payload, JWT_SECRET, algorithm=JWT_ALGORITHM)
 

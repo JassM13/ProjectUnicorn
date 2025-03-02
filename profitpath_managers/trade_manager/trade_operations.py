@@ -1,4 +1,3 @@
-import os
 from typing import List, Dict, Optional
 from uuid import UUID
 from database.postgresql_manager import PostgresManager
@@ -14,20 +13,20 @@ class TradeOperations:
 
     def __init__(self):
         if not self._initialized:
-            self.trades_file = os.path.join('datastorage', 'trades.csv')
             self.pg_manager = PostgresManager.getInstance()
             self._init_database()
             self._initialized = True
 
     def _init_database(self):
-        """Initialize PostgreSQL database and import existing data"""
+        """Initialize PostgreSQL database"""
         conn = self.pg_manager.get_connection()
         try:
             with conn.cursor() as cur:
                 cur.execute("""
                     CREATE TABLE IF NOT EXISTS trades (
-                        id VARCHAR,
-                        user_id VARCHAR,
+                        id VARCHAR PRIMARY KEY,
+                        sub_account_id VARCHAR REFERENCES sub_accounts(id),
+                        trade_group VARCHAR,
                         symbol VARCHAR,
                         entry_price DOUBLE PRECISION,
                         exit_price DOUBLE PRECISION,
@@ -39,39 +38,53 @@ class TradeOperations:
                         risk_reward_ratio DOUBLE PRECISION
                     )
                 """)
-                
-                if os.path.exists(self.trades_file):
-                    try:
-                        with open(self.trades_file, 'r') as f:
-                            cur.copy_expert(
-                                "COPY trades FROM STDIN WITH (FORMAT CSV, HEADER TRUE)",
-                                f
-                            )
-                    except Exception:
-                        os.makedirs(os.path.dirname(self.trades_file), exist_ok=True)
-                        if not os.path.exists(self.trades_file):
-                            with open(self.trades_file, 'w') as f:
-                                cur.copy_expert(
-                                    "COPY trades TO STDIN WITH (FORMAT CSV, HEADER TRUE)",
-                                    f
-                                )
                 conn.commit()
         finally:
             self.pg_manager.release_connection(conn)
 
-    def add_trade(self, user_id: str, trade_data: Dict) -> bool:
-        """Add a new trade to the database"""
+    def add_trade(self, user_id: str, sub_account_id: str, trade_data: Dict) -> bool:
+        """Add a new trade to the database under a specific sub-account"""
+        from profitpath_managers.user_manager.sub_account_service import SubAccountService
+
+        if not user_id:
+            print("Error: user_id is required")
+            return False
+
         conn = self.pg_manager.get_connection()
         try:
             with conn.cursor() as cur:
+                # First, try to get the sub-account if provided
+                if sub_account_id:
+                    cur.execute("""
+                        SELECT user_id FROM sub_accounts WHERE id = %s
+                    """, [sub_account_id])
+                    result = cur.fetchone()
+                    
+                    # Verify the sub-account belongs to the user
+                    if result and result[0] != user_id:
+                        print("Error: Sub-account does not belong to the user")
+                        return False
+                else:
+                    result = None
+
+                if not result:
+                    # If sub_account doesn't exist or wasn't provided, get/create default sub-account
+                    sub_account_service = SubAccountService()
+                    default_sub_account = sub_account_service.get_default_sub_account(user_id)
+                    if not default_sub_account:
+                        print("Error: Unable to create default sub-account")
+                        return False
+                    sub_account_id = str(default_sub_account.id)
+
                 cur.execute("""
-                    INSERT INTO trades (id, user_id, symbol, entry_price, exit_price, 
-                                    position_size, entry_date, exit_date, profit_loss, 
-                                    trade_type, risk_reward_ratio)
-                    VALUES (%s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s)
+                    INSERT INTO trades (id, sub_account_id, trade_group, symbol, entry_price, 
+                                    exit_price, position_size, entry_date, exit_date, 
+                                    profit_loss, trade_type, risk_reward_ratio)
+                    VALUES (%s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s)
                 """, [
                     trade_data.get('id'),
-                    user_id,
+                    sub_account_id,
+                    trade_data.get('trade_group'),
                     trade_data.get('symbol'),
                     trade_data.get('entry_price'),
                     trade_data.get('exit_price'),
@@ -82,13 +95,6 @@ class TradeOperations:
                     trade_data.get('trade_type'),
                     trade_data.get('risk_reward_ratio')
                 ])
-                
-                # Save to CSV for persistence
-                with open(self.trades_file, 'w') as f:
-                    cur.copy_expert(
-                        "COPY trades TO STDIN WITH (FORMAT CSV, HEADER TRUE)",
-                        f
-                    )
                 conn.commit()
                 return True
         except Exception as e:
@@ -99,31 +105,35 @@ class TradeOperations:
             self.pg_manager.release_connection(conn)
 
     def get_user_trades(self, user_id: str) -> List[Dict]:
-        """Get all trades for a specific user"""
+        """Get all trades for a specific user through their sub-accounts"""
         conn = self.pg_manager.get_connection()
         try:
             with conn.cursor() as cur:
                 cur.execute("""
-                    SELECT id, symbol, entry_price, exit_price, position_size,
-                           entry_date, exit_date, profit_loss, trade_type, risk_reward_ratio
-                    FROM trades
-                    WHERE user_id = %s
-                    ORDER BY entry_date DESC
+                    SELECT t.id, t.trade_group, t.symbol, t.entry_price, t.exit_price, 
+                           t.position_size, t.entry_date, t.exit_date, t.profit_loss, 
+                           t.trade_type, t.risk_reward_ratio, s.name as sub_account_name
+                    FROM trades t
+                    JOIN sub_accounts s ON t.sub_account_id = s.id
+                    WHERE s.user_id = %s
+                    ORDER BY t.entry_date DESC
                 """, [user_id])
                 
                 trades = []
                 for row in cur.fetchall():
                     trades.append({
                         'id': row[0],
-                        'symbol': row[1],
-                        'entry_price': row[2],
-                        'exit_price': row[3],
-                        'position_size': row[4],
-                        'entry_date': row[5],
-                        'exit_date': row[6],
-                        'profit_loss': row[7],
-                        'trade_type': row[8],
-                        'risk_reward_ratio': row[9]
+                        'trade_group': row[1],
+                        'symbol': row[2],
+                        'entry_price': row[3],
+                        'exit_price': row[4],
+                        'position_size': row[5],
+                        'entry_date': row[6],
+                        'exit_date': row[7],
+                        'profit_loss': row[8],
+                        'trade_type': row[9],
+                        'risk_reward_ratio': row[10],
+                        'sub_account_name': row[11]
                     })
                 return trades
         finally:

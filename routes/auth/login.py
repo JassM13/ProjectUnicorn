@@ -2,7 +2,7 @@ from fasthtml.common import *
 from dataclasses import dataclass
 from profitpath_managers.user_manager.user_authentication_service import UserAuthenticationService
 from utils.jwt import generate_token
-from views.auth.login import login_view
+from views.auth_views.login import login_view
 from models.user import User
 
 def register_login_routes(rt):

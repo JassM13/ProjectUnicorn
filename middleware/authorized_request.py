@@ -26,7 +26,7 @@ def authorized_request(f):
             
             print(payload)
             # Store user ID in session for later use
-            session['uuid'] = payload['uuid']
+            session['user_id'] = payload['uuid']
             
             # Call the original function
             return f(session, *args, **kwargs)
