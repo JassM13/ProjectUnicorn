@@ -1,14 +1,10 @@
 from fasthtml.common import *
 from views.main_view.mainview import mainview
-from profitpath_managers.trade_manager.trade_operations import TradeOperations
-from profitpath_managers.user_manager.sub_account_service import SubAccountService
 from models.trade import Trade, TradeGroup
 from datetime import datetime
 from middleware.authorized_request import authorized_request
 from middleware.device_restriction import restrict_small_devices
 
-trade_operations = TradeOperations()
-sub_account_service = SubAccountService()
 
 def register_trades_routes(rt):
     @rt("/trades")
@@ -17,14 +13,21 @@ def register_trades_routes(rt):
     def get(session):
         return mainview(active="trades")
     
+    # Temporarily disabled /api/trades endpoint
+    @rt("/api/trades")
+    async def post(request, session):
+        return Div(
+            "Trade submission is temporarily disabled",
+            style="padding: 16px; background: #ff9933; color: white; border-radius: 8px;"
+        )
+    
+    """    
+    # Original implementation preserved for reference
     @rt("/api/trades")
     async def post(request, session):
         try:
             # Get user's default sub-account
             user_id = session.get('user_id')
-            default_account = sub_account_service.get_default_sub_account(user_id)
-            if not default_account:
-                raise Exception("No default sub-account found")
             
             # Extract form data
             form_data = await request.form()
@@ -47,7 +50,6 @@ def register_trades_routes(rt):
             # Create a trade group for the sub-account if it doesn't exist
             trade_group = TradeGroup()
             trade_group.trades.append(trade)
-            default_account.trade_groups.append(trade_group)
             
             # Create trade data dictionary for database operation
             trade_data = {
@@ -59,7 +61,7 @@ def register_trades_routes(rt):
                 'entry_price': trade.entry_price,
                 'exit_price': trade.exit_price,
                 'position_size': trade.size,
-                'sub_account_id': str(default_account.id),
+                #'sub_account_id': str(default_account.id),
                 'trade_group_id': str(trade_group.id)
             }
             
@@ -75,5 +77,7 @@ def register_trades_routes(rt):
                 f"Error adding trade: {str(e)}",
                 style="padding: 16px; background: #ff4444; color: white; border-radius: 8px;"
             )
+    """
+
     
     return rt

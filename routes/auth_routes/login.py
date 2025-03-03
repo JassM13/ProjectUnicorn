@@ -1,16 +1,17 @@
 from fasthtml.common import *
-from dataclasses import dataclass
-from profitpath_managers.user_manager.user_authentication_service import UserAuthenticationService
+from database.firebase_manager import FirebaseManager
+from google.cloud.firestore import FieldFilter
 from utils.jwt import generate_token
 from views.auth_views.login import login_view
 from models.user import User
+import bcrypt
 
 def register_login_routes(rt):
-    auth_service = UserAuthenticationService()
+    firebase_manager = FirebaseManager.getInstance()
 
     @rt("/login")
     def get(session):
-        if 'AuthToken' in session:
+        if 'auth_token' in session:
             return Redirect('/dashboard')
         return login_view()
 
@@ -22,16 +23,41 @@ def register_login_routes(rt):
         
         print(user.identifier)
         # Try to verify password with either username or email
-        if '@' in user.identifier:
-            if not auth_service.verify_password(user.identifier, user.password, is_email=True):
-                return Div("Invalid email or password", id="result", style="color: red;")
-            identifier = user.email
-        else:
-            if not auth_service.verify_password(user.identifier, user.password):
-                return Div("Invalid username or password", id="result", style="color: red;")
-            identifier = user.username
-        token = generate_token(user.user_id)
-        session['AuthToken'] = token
-        return Redirect('/dashboard')
+        try:
+            if '@' in user.identifier:
+                # Query user by email
+                user_query = firebase_manager.db.collection('users').where(filter=FieldFilter('email', '==', user.identifier)).limit(1).get()
+            else:
+                # Query user by username
+                user_query = firebase_manager.db.collection('users').where(filter=FieldFilter('username', '==', user.identifier)).limit(1).get()
+
+            if not user_query:
+                return Div(
+                    P("User does not exist. ",
+                    A("Try signing up instead.", href="/register", style="color: #f6cd70; text-decoration: none;"),
+                    style="margin-top: 20px; color: white;"
+                    )
+                )
+
+            user_data = user_query[0].to_dict()
+            stored_password = user_data.get('password_hash')
+
+            if not bcrypt.checkpw(user.password.encode('utf-8'), stored_password):
+                return Div(
+                    P("Invalid Credentials",
+                    style="margin-top: 20px; color: red;"
+                    )
+                )
+
+            # Generate token using the document ID as user_id
+            token = generate_token(user_query[0].id)
+            session['auth_token'] = token
+            session['user_id'] = user_query[0].id
+            
+            return Redirect('/dashboard')
+            
+        except Exception as e:
+            print(f"Login error: {str(e)}")
+            return Div("An error occurred during login", id="result", style="color: red;")
 
     return rt

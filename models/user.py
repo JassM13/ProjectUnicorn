@@ -1,6 +1,7 @@
 from dataclasses import dataclass
 from typing import Optional
 import uuid
+import bcrypt
 
 @dataclass
 class User:
@@ -15,6 +16,19 @@ class User:
         # Set identifier based on username or email if not provided
         if not self.identifier:
             self.identifier = self.email if self.email else self.username
+    
+    def hash_password(self, plain_password: str):
+        """Internal method to hash the password"""
+        if plain_password:
+            salt = bcrypt.gensalt()
+            self.password = bcrypt.hashpw(plain_password.encode('utf-8'), salt)
+            return self.password
+    
+    def verify_password(self, plain_password: str) -> bool:
+        """Verify if the provided password matches the stored hash"""
+        if not self.password or not plain_password:
+            return False
+        return bcrypt.checkpw(plain_password.encode('utf-8'), self.password)
     
     @classmethod
     def validate(cls, user) -> tuple[str]:

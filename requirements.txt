@@ -1,3 +1,4 @@
 python-fasthtml
-psycopg2-binary
+firebase-admin
 PyJWT
+bcrypt
