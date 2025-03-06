@@ -9,6 +9,7 @@ from routes.auth_routes import register_auth_routes
 from routes.dashboard_routes import register_dashboard_routes
 from routes.trades_routes import register_trades_routes
 from routes.exceptions_routes import register_exception_routes
+from routes.profiles_routes import register_profile_routes
 
 
 load_dotenv()
@@ -58,6 +59,7 @@ rt = register_auth_routes(rt)
 rt = register_dashboard_routes(rt)
 rt = register_trades_routes(rt)
 rt = register_exception_routes(rt)
+rt = register_profile_routes(rt)
 
 # Default route
 @rt("/")

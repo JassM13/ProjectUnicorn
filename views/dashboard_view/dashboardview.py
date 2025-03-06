@@ -14,14 +14,6 @@ def dashboard_view():
                     draggable: true,
                     animation: 'dynamic'
                 });
-
-                // Add keyboard shortcut to toggle Swapy (Ctrl/Cmd + Shift + S)
-                document.addEventListener('keydown', function(e) {
-                    if ((e.ctrlKey || e.metaKey) && e.shiftKey && e.key === 'S') {
-                        e.preventDefault();
-                        window.swapy.enable(!window.swapy.isEnabled());
-                    }
-                });
             });
         """),
         Div(

@@ -13,35 +13,27 @@ def authorized_request(f):
         if not token:
             return Redirect('/login')
 
-        # Validate JWT token
-        try:
-            # Verify JWT token and get payload
-            payload = verify_token(token)
-            if not payload:
-                session['user_id'] = None
-                session['auth_token'] = None
-                return Redirect('/login')
+        
+        # Verify JWT token and get payload
+        payload = verify_token(token)
+        if not payload:
+            session['user_id'] = None
+            session['auth_token'] = None
+            return Redirect('/login')
             
-            # Store user ID in session for later use
-            session['user_id'] = payload['uuid']
+        # Store user ID in session for later use
+        session['user_id'] = payload['uuid']
             
-            # Verify account exists in database
-            firebase_manager = FirebaseManager.getInstance()
-            user_ref = firebase_manager.db.collection('users').document(payload['uuid']).get()
-            if not user_ref.exists:
-                session['user_id'] = None
-                session['auth_token'] = None
-                return Redirect('/login')
+        # Verify account exists in database
+        firebase_manager = FirebaseManager.getInstance()
+        user_ref = firebase_manager.db.collection('users').document(payload['uuid']).get()
+        if not user_ref.exists:
+            session['user_id'] = None
+            session['auth_token'] = None
+            return Redirect('/login')
+
+        # Call the original function
+        return f(session, *args, **kwargs)
             
-            # Call the original function
-            return f(session, *args, **kwargs)
-            
-        except Exception as e:
-            print(f"Token validation error: {str(e)}")
-            return Div(
-                "Access denied - Token validation failed",
-                id="error",
-                style="color: red;"
-            )
             
     return decorated_function

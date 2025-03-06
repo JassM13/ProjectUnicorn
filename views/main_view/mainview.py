@@ -2,6 +2,7 @@ from fasthtml.common import *
 from views.dashboard_view.dashboardview import dashboard_view
 from views.pages.tradesview import trades_view
 from views.pages.calendarview import calendar_view
+from views.profiles_views.profilesview import profiles_view
 
 def sidebar(active):
     return Div(
@@ -23,11 +24,14 @@ def sidebar(active):
                 A(Img(src="/assets/svgs/Calendar/Calendar_Days.svg", alt="Calendar"), 
                   hx_get="/calendar", hx_target="#main-content", hx_push_url="true",
                   style=f"display:block; margin: 20px 0; text-align:center; font-size:16px; color:white; opacity: {'1' if active == 'calendar' else '0.5'};"),
+                A(Img(src="/assets/svgs/User/Users_Group.svg", alt="Profiles"), 
+                  hx_get="/profiles", hx_target="#main-content", hx_push_url="true",
+                  style=f"display:block; margin: 20px 0; text-align:center; font-size:16px; color:white; opacity: {'1' if active == 'profiles' else '0.5'};"),
             ),
 
             # User Profile at the bottom
             Div(
-                A(Img(src="/assets/svgs/User/User_Circle.svg", alt="Profile"), href="/profile", style="display:block; margin-top: 20px 0; text-align:center; font-size:16px; color:white; opacity: 1;"),
+                A(Img(src="/assets/svgs/User/User_Circle.svg", alt="Account"), href="/account", style="display:block; margin-top: 20px 0; text-align:center; font-size:16px; color:white; opacity: 1;"),
             ),
 
             # Sidebar Styling
@@ -45,7 +49,8 @@ def mainview(active="dashboard"):
     view_map = {
         "dashboard": dashboard_view,
         "trades": trades_view,
-        "calendar": calendar_view
+        "calendar": calendar_view,
+        "profiles": profiles_view
     }
     
     # Get the appropriate view function or default to dashboard

@@ -81,6 +81,25 @@ def index_view():
         """),
         Script("""
             document.addEventListener('DOMContentLoaded', () => {
+                // Seeded initialization
+                const seed = localStorage.getItem('unicornSeed') || 
+                    (Math.random().toString(36).substr(2, 9) + Date.now());
+                localStorage.setItem('unicornSeed', seed);
+
+                // Seeded random generator
+                const seededRandom = (() => {
+                    let value = 0;
+                    for (let i = 0; i < seed.length; i++) {
+                        value += seed.charCodeAt(i) * (i + 1);
+                    }
+                    return () => {
+                        value = Math.sin(value) * 10000;
+                        const val = value - Math.floor(value);
+                        value = val * 1000;
+                        return val;
+                    };
+                })();
+
                 // Three.js Scene Setup
                 const scene = new THREE.Scene();
                 const container = document.getElementById('three-container');
@@ -111,41 +130,43 @@ def index_view():
                 });
 
                 function createCandlestick() {
-                    const height = Math.random() * 2 + 1;
+                    const height = 1 + seededRandom() * 2;
                     const width = 0.3;
                     const wickHeight = height * 1.5;
-                    
+
                     const bodyGeometry = new THREE.BoxGeometry(width, height, width, 8, 8, 8);
                     const wickGeometry = new THREE.BoxGeometry(width/3, wickHeight, width/3, 4, 8, 4);
-                    
+
                     const body = new THREE.Mesh(bodyGeometry, candlestickMaterial);
                     const wick = new THREE.Mesh(wickGeometry, candlestickMaterial);
-                    
+
                     body.castShadow = true;
                     body.receiveShadow = true;
                     wick.castShadow = true;
                     wick.receiveShadow = true;
-                    
+
                     const candlestick = new THREE.Group();
                     candlestick.add(body);
                     candlestick.add(wick);
+
+                    // Original expanded spawn area with seeded randomness
+                    candlestick.position.set(
+                        seededRandom() * 80 - 40,  // X: -40 to +40
+                        seededRandom() * 80 - 40,  // Y: -40 to +40
+                        seededRandom() * 40 - 45   // Z: -45 to -5
+                    );
                     
-                    // Expanded spawn area
-                    candlestick.position.x = Math.random() * 80 - 40;
-                    candlestick.position.y = Math.random() * 80 - 40;
-                    candlestick.position.z = Math.random() * 40 - 45;
-                    
-                    candlestick.rotation.x = Math.random() * Math.PI;
-                    candlestick.rotation.y = Math.random() * Math.PI;
+                    candlestick.rotation.x = seededRandom() * Math.PI;
+                    candlestick.rotation.y = seededRandom() * Math.PI;
                     
                     scene.add(candlestick);
                     candlesticks.push({
                         object: candlestick,
-                        speed: Math.random() * 0.01 + 0.005
+                        speed: 0.005 + seededRandom() * 0.01
                     });
                 }
                 
-                // Create more initial candlesticks for better coverage
+                // Create initial candlesticks
                 for (let i = 0; i < 50; i++) {
                     createCandlestick();
                 }
