@@ -3,35 +3,40 @@ from fasthtml.common import *
 def trades_view():
     return Div(
         Script("""
-            document.addEventListener('DOMContentLoaded', function() {
-                const addButton = document.getElementById('add_trade_button');
-                const modal = document.getElementById('trade_modal');
-                const modalOverlay = document.getElementById('modal_overlay');
-                const cancelButton = document.getElementById('cancel_trade_button');
-                const tradeForm = document.getElementById('trade_form');
+            document.addEventListener('htmx:load', function() {
+                // Add a small delay to ensure DOM is fully loaded
+                setTimeout(function() {
+                    const addButton = document.getElementById('add_trade_button');
+                    const modal = document.getElementById('trade_modal');
+                    const modalOverlay = document.getElementById('modal_overlay');
+                    const cancelButton = document.getElementById('cancel_trade_button');
+                    const tradeForm = document.getElementById('trade_form');
 
-                function showModal() {
-                    modalOverlay.style.opacity = '1';
-                    modalOverlay.style.visibility = 'visible';
-                    modal.style.opacity = '1';
-                    modal.style.visibility = 'visible';
-                    modal.style.transform = 'translate(-50%, -50%) scale(1)';
-                }
+                    function showModal() {
+                        if (!modalOverlay || !modal) return;
+                        modalOverlay.style.opacity = '1';
+                        modalOverlay.style.visibility = 'visible';
+                        modal.style.opacity = '1';
+                        modal.style.visibility = 'visible';
+                        modal.style.transform = 'translate(-50%, -50%) scale(1)';
+                    }
 
-                function hideModal() {
-                    modalOverlay.style.opacity = '0';
-                    modalOverlay.style.visibility = 'hidden';
-                    modal.style.opacity = '0';
-                    modal.style.visibility = 'hidden';
-                    modal.style.transform = 'translate(-50%, -50%) scale(0.8)';
-                    tradeForm.reset();
-                }
+                    function hideModal() {
+                        if (!modalOverlay || !modal) return;
+                        modalOverlay.style.opacity = '0';
+                        modalOverlay.style.visibility = 'hidden';
+                        modal.style.opacity = '0';
+                        modal.style.visibility = 'hidden';
+                        modal.style.transform = 'translate(-50%, -50%) scale(0.8)';
+                        if (tradeForm) tradeForm.reset();
+                    }
 
-                addButton.addEventListener('click', showModal);
-                cancelButton.addEventListener('click', hideModal);
-                modalOverlay.addEventListener('click', function(e) {
-                    if (e.target === modalOverlay) hideModal();
-                });
+                    if (addButton) addButton.addEventListener('click', showModal);
+                    if (cancelButton) cancelButton.addEventListener('click', hideModal);
+                    if (modalOverlay) modalOverlay.addEventListener('click', function(e) {
+                        if (e.target === modalOverlay) hideModal();
+                    });
+                }, 100); // Small delay to ensure DOM elements are available
             });
         """),
         # Main container with trades list and form
@@ -142,30 +147,30 @@ def trades_view():
                         style="display: flex; justify-content: flex-end;"
                     ),
                     Script("""
-                        document.addEventListener('DOMContentLoaded', function() {
-                            const now = new Date();
-                            const enteredAtInput = document.querySelector('input[name="entered_at"]');
-                            const exitedAtInput = document.querySelector('input[name="exited_at"]');
-                            const tradeDayInput = document.querySelector('input[name="trade_day"]');
-                            const tradeForm = document.getElementById('trade_form');
-                            const alertDiv = document.getElementById('trade_form_alert');
-                            
-                            function formatDateTime(date) {
-                                return date.toISOString().slice(0, 16);
-                            }
-                            
-                            // Set initial values
-                            enteredAtInput.value = formatDateTime(now);
-                            exitedAtInput.value = formatDateTime(now);
-                            
-                            // Update trade_day when exited_at changes
-                            exitedAtInput.addEventListener('change', function() {
-                                const exitDate = new Date(this.value);
-                                tradeDayInput.value = exitDate.toISOString().split('T')[0];
-                            });
-                            
-                            // Trigger initial trade_day update
-                            tradeDayInput.value = now.toISOString().split('T')[0];
+                        document.addEventListener('htmx:load', function() {
+                            setTimeout(function() {
+                                const now = new Date();
+                                const enteredAtInput = document.querySelector('input[name="entered_at"]');
+                                const exitedAtInput = document.querySelector('input[name="exited_at"]');
+                                const tradeDayInput = document.querySelector('input[name="trade_day"]');
+                                
+                                function formatDateTime(date) {
+                                    return date.toISOString().slice(0, 16);
+                                }
+                                
+                                // Set initial values with null checks
+                                if (enteredAtInput) enteredAtInput.value = formatDateTime(now);
+                                if (exitedAtInput) exitedAtInput.value = formatDateTime(now);
+                                if (tradeDayInput) tradeDayInput.value = now.toISOString().split('T')[0];
+                                
+                                // Update trade_day when exited_at changes
+                                if (exitedAtInput && tradeDayInput) {
+                                    exitedAtInput.addEventListener('change', function() {
+                                        const exitDate = new Date(this.value);
+                                        tradeDayInput.value = exitDate.toISOString().split('T')[0];
+                                    });
+                                }
+                            }, 100); // Small delay to ensure elements are available
                         });
                     """),
                     Div(

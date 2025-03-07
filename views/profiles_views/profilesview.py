@@ -1,83 +1,109 @@
 from fasthtml.common import *
+import json
+from views.profiles_views.popups.profile_popup import profile_popup
 
-def profiles_view():
-    # Sample profile data - In a real app, this would come from a database
-    profiles = [
-        {"name": "Trading Bot Alpha", "trades": 156, "last_updated": "2h ago", "broker_connected": True},
-        {"name": "Swing Trader", "trades": 89, "last_updated": "1d ago", "broker_connected": True},
-        {"name": "Day Trading", "trades": 432, "last_updated": "5m ago", "broker_connected": False},
-        {"name": "Long Term Portfolio", "trades": 45, "last_updated": "5d ago", "broker_connected": True},
-    ]
+def profiles_view(session=None):
+    # Initialize with empty profiles array
+    # Profiles will be loaded via HTMX from the API endpoint
+    profiles = []
     
     return Div(
-        Script("""
-            document.addEventListener('DOMContentLoaded', function() {
-                const table = document.querySelector('.profiles-table');
-                const headers = table.querySelectorAll('th');
+        Link(rel="stylesheet", href="/views/profiles_views/gridding/styles.css"),
+        Script(src="/views/profiles_views/gridding/grid.js"),
+        Script(f"""
+            function fetchAndInitializeProfiles() {{
+                // Fetch profiles from API endpoint
+                fetch('/api/profiles/get')
+                    .then(response => response.json())
+                    .then(profiles => {{
+                        initializeGrid('profilesGrid', profiles);
+                    }})
+                    .catch(error => {{
+                        console.error('Error fetching profiles:', error);
+                        // Initialize with empty array if fetch fails
+                        initializeGrid('profilesGrid', []);
+                    }});
+            }}
+            
+            function showProfileModal() {{
+                const modalOverlay = document.getElementById('profile_modal_overlay');
+                const modal = document.querySelector('#profile_popup_container > div:first-child');
                 
-                headers.forEach((header, index) => {
-                    header.addEventListener('click', () => {
-                        const rows = Array.from(table.querySelectorAll('tr:not(:first-child)'));
-                        const isNumeric = index === 1; // trades column
-                        
-                        rows.sort((a, b) => {
-                            const aValue = a.children[index].textContent;
-                            const bValue = b.children[index].textContent;
-                            
-                            if (isNumeric) {
-                                return parseInt(bValue) - parseInt(aValue);
-                            }
-                            return bValue.localeCompare(aValue);
-                        });
-                        
-                        rows.forEach(row => table.appendChild(row));
-                    });
-                });
-            });
+                if (!modalOverlay || !modal) return;
+                
+                modalOverlay.style.opacity = '1';
+                modalOverlay.style.visibility = 'visible';
+                modal.style.opacity = '1';
+                modal.style.visibility = 'visible';
+                modal.style.transform = 'translate(-50%, -50%) scale(1)';
+            }}
+            
+            function hideProfileModal() {{
+                const modalOverlay = document.getElementById('profile_modal_overlay');
+                const modal = document.querySelector('#profile_popup_container > div:first-child');
+                const profileForm = document.getElementById('profile_form');
+                
+                if (!modalOverlay || !modal) return;
+                
+                modalOverlay.style.opacity = '0';
+                modalOverlay.style.visibility = 'hidden';
+                modal.style.opacity = '0';
+                modal.style.visibility = 'hidden';
+                modal.style.transform = 'translate(-50%, -50%) scale(0.8)';
+                if (profileForm) profileForm.reset();
+            }}
+            
+            // Refresh profiles after successful creation
+            document.addEventListener('htmx:afterRequest', function(event) {{
+                if (event.detail.target && event.detail.target.id === 'profile_form_alert') {{
+                    // Check if the response indicates success
+                    if (event.detail.xhr.responseText.includes('successfully')) {{
+                        // Hide modal after successful profile creation
+                        setTimeout(function() {{
+                            hideProfileModal();
+                            // Refresh profiles
+                            fetchAndInitializeProfiles();
+                        }}, 1500); // Short delay to allow user to see success message
+                    }}
+                }}
+            }});
+            
+            document.addEventListener('htmx:load', function() {{
+                // Wait for DOM to be fully loaded
+                setTimeout(function() {{
+                    fetchAndInitializeProfiles();
+                    
+                    // Setup modal event listeners
+                    const addButton = document.getElementById('add_profile_button');
+                    const cancelButton = document.getElementById('cancel_profile_button');
+                    const modalOverlay = document.getElementById('profile_modal_overlay');
+                    
+                    if (addButton) addButton.addEventListener('click', showProfileModal);
+                    if (cancelButton) cancelButton.addEventListener('click', hideProfileModal);
+                    if (modalOverlay) modalOverlay.addEventListener('click', function(e) {{
+                        if (e.target === modalOverlay) hideProfileModal();
+                    }});
+                }}, 100); // Small delay to ensure DOM elements are available
+            }});
         """),
         Div(
-            H2("Profiles", style="margin: 0 0 24px 0;"),
-            Table(
-                Tr(
-                    Th("Name", style="background: #222; font-weight: 600; text-align: left; padding: 16px; border-bottom: 2px solid #333; cursor: pointer; transition: background-color 0.2s;"),
-                    Th("Trades", style="background: #222; font-weight: 600; text-align: left; padding: 16px; border-bottom: 2px solid #333; cursor: pointer; transition: background-color 0.2s;"),
-                    Th("Last Updated", style="background: #222; font-weight: 600; text-align: left; padding: 16px; border-bottom: 2px solid #333; cursor: pointer; transition: background-color 0.2s;"),
-                    Th("Status", style="background: #222; font-weight: 600; text-align: left; padding: 16px; border-bottom: 2px solid #333; cursor: pointer; transition: background-color 0.2s;"),
-                    Th("Actions", style="background: #222; font-weight: 600; text-align: left; padding: 16px; border-bottom: 2px solid #333;"),
+            Div(
+                H2("Profiles", style="margin: 0 0 8px 0;"),
+                Button(
+                    Img(src='assets/svgs/User/User_Add.svg', style="margin-right: 8px;"),
+                    "New Profile",
+                    id="add_profile_button",
+                    style="""background-color: #f6cd70; color: black; border: none; 
+                           border-radius: 16px; padding: 8px 16px; font-size: 14px; 
+                           font-weight: 600; cursor: pointer; margin-bottom: 8px;
+                           display: flex; align-items: center; justify-content: center;"""
                 ),
-                *[
-                    Tr(
-                        Td(profile["name"], style="padding: 16px; background-color: #111; border-bottom: 1px solid #333; color: #ccc;"),
-                        Td(str(profile["trades"]), style="padding: 16px; background-color: #111; border-bottom: 1px solid #333; color: #ccc;"),
-                        Td(profile["last_updated"], style="padding: 16px; background-color: #111; border-bottom: 1px solid #333; color: #ccc;"),
-                        Td(
-                            Span(
-                                "Connected" if profile["broker_connected"] else "Disconnected",
-                                style=f"padding: 6px 12px; border-radius: 20px; font-size: 0.9em; font-weight: 500; display: inline-block; {'background: rgba(46, 213, 115, 0.15); color: #2ed573; border: 1px solid rgba(46, 213, 115, 0.3);' if profile['broker_connected'] else 'background: rgba(255, 71, 87, 0.15); color: #ff4757; border: 1px solid rgba(255, 71, 87, 0.3);'}"
-                            ),
-                            style="padding: 16px; background-color: #111; border-bottom: 1px solid #333; color: #ccc;"
-                        ),
-                        Td(
-                            Div(
-                                Button(
-                                    Img(src="/assets/svgs/Edit/Edit_Pencil.svg", alt="Edit", style="width: 20px; height: 20px;"),
-                                    style="background: none; border: none; cursor: pointer; padding: 8px; transition: all 0.2s ease;"
-                                ),
-                                Button(
-                                    Img(src="/assets/svgs/User/User_Remove.svg", alt="Remove", style="width: 20px; height: 20px;"),
-                                    style="background: none; border: none; cursor: pointer; padding: 8px; transition: all 0.2s ease;"
-                                ),
-                                style="display: flex; align-items: center;"
-                            ),
-                            style="padding: 16px; background-color: #111; border-bottom: 1px solid #333; color: #ccc;"
-                        )
-                    )
-                    for profile in profiles
-                ],
-                style="width: 100%; border-collapse: collapse; background: #1a1a1a; border-radius: 8px; overflow: hidden;"
+                style="display: flex; align-items: center; justify-content: space-between; margin-bottom: 24px;"
             ),
+            Div(id="profilesGrid", cls="custom-grid"),
             style="width: 100%;"
         ),
+        profile_popup(),
         style="""
             display: flex;
             flex-direction: column;

@@ -8,12 +8,17 @@ def dashboard_view():
     return Div(
         Script(src="/views/dashboard_view/js/swapy.min.js"),
         Script("""
-            document.addEventListener('DOMContentLoaded', function() {
-                const container = document.querySelector('.dashboard-container');
-                window.swapy = Swapy.createSwapy(container, {
-                    draggable: true,
-                    animation: 'dynamic'
-                });
+            document.addEventListener('htmx:load', function() {
+                // Add a small delay to ensure DOM is fully rendered
+                setTimeout(function() {
+                    const container = document.querySelector('.dashboard-container');
+                    if (container) {
+                        window.swapy = Swapy.createSwapy(container, {
+                            draggable: true,
+                            animation: 'dynamic'
+                        });
+                    }
+                }, 100);
             });
         """),
         Div(

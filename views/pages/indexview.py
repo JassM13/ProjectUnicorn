@@ -80,7 +80,7 @@ def index_view():
             }
         """),
         Script("""
-            document.addEventListener('DOMContentLoaded', () => {
+            document.addEventListener('htmx:load', () => {
                 // Three.js Scene Setup
                 const scene = new THREE.Scene();
                 const container = document.getElementById('three-container');

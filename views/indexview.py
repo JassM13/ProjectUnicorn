@@ -80,7 +80,7 @@ def index_view():
             }
         """),
         Script("""
-            document.addEventListener('DOMContentLoaded', () => {
+            document.addEventListener('htmx:load', () => {
                 // Seeded initialization
                 const seed = localStorage.getItem('unicornSeed') || 
                     (Math.random().toString(36).substr(2, 9) + Date.now());
@@ -198,8 +198,8 @@ def index_view():
         Div(
             Div(id="three-container", style="position: absolute; top: 0; left: 0; width: 100%; height: 100%; z-index: 1;"),
             Div(
-                H1("Project Unicorn", cls="hero-text", style="margin-bottom: 24px; font-weight: 800; letter-spacing: -1px;"),
-                P("Where Innovation Meets Intelligence", style="color: var(--text-primary); font-size: 1.5em; margin-bottom: 40px; text-shadow: 0 2px 10px rgba(0,0,0,0.3);"),
+                H1("ProfitPath", cls="hero-text", style="margin-bottom: 24px; font-weight: 800; letter-spacing: -1px;"),
+                P("A Step Closer to Profitability", style="color: var(--text-primary); font-size: 1.5em; margin-bottom: 40px; text-shadow: 0 2px 10px rgba(0,0,0,0.3);"),
                 Div(
                     A("Experience the Magic", href="/login", cls="cta-button", 
                       style="background: var(--primary-light); color: var(--background-dark); text-decoration: none; padding: 16px 40px; border-radius: 30px; font-weight: bold; margin-right: 24px;"),

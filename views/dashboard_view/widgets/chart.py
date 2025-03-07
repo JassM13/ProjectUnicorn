@@ -11,15 +11,23 @@ def chart_widget():
                 style="height: 105%; margin: -10px;"
             ),
             Script(f"""
-                let chart = null;
+                // Use window-scoped variable to prevent redeclaration errors
+                if (typeof window.profitChartInstance === 'undefined') {{
+                    window.profitChartInstance = null;
+                }}
+                
+                // Also use window-scoped observer to prevent redeclaration errors
+                if (typeof window.profitChartObserver === 'undefined') {{
+                    window.profitChartObserver = null;
+                }}
                 
                 function initializeChart() {{
                     const canvas = document.getElementById('profitChart');
                     if (!canvas) return;
                     
                     const ctx = canvas.getContext('2d');
-                    if (chart) {{
-                        chart.destroy();
+                    if (window.profitChartInstance) {{
+                        window.profitChartInstance.destroy();
                     }}
                     
                     const data = {{
@@ -69,14 +77,21 @@ def chart_widget():
                         }}
                     }};
 
-                    chart = new Chart(ctx, config);
+                    window.profitChartInstance = new Chart(ctx, config);
                 }}
 
-                // Initialize chart when content is loaded
-                document.addEventListener('DOMContentLoaded', initializeChart);
+                // Initialize chart when HTMX loads content
+                document.addEventListener('htmx:load', function() {{
+                    // Add a small delay to ensure canvas is available
+                    setTimeout(initializeChart, 100);
+                }});
 
                 // Initialize chart when element becomes visible
-                const observer = new MutationObserver((mutations) => {{
+                if (window.profitChartObserver) {{
+                    window.profitChartObserver.disconnect();
+                }}
+                
+                window.profitChartObserver = new MutationObserver((mutations) => {{
                     mutations.forEach((mutation) => {{
                         if (mutation.type === 'childList' && document.getElementById('profitChart')) {{
                             initializeChart();
@@ -85,7 +100,7 @@ def chart_widget():
                 }});
 
                 // Start observing the document for DOM changes
-                observer.observe(document.documentElement, {{
+                window.profitChartObserver.observe(document.documentElement, {{
                     childList: true,
                     subtree: true
                 }});

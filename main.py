@@ -54,6 +54,8 @@ app, rt = fast_app(live=bool(os.getenv("DEVELOPMENT_MODE", "false").lower() == "
                     exception_handlers=exception_handlers
                )
 
+app.title="ProfitPath"
+
 # Register all routes
 rt = register_auth_routes(rt)
 rt = register_dashboard_routes(rt)
