@@ -60,6 +60,12 @@ def mainview(active="dashboard"):
         sidebar(active=active),
         Div(
             Div(
+                Div(
+                    style="""background-color: #000; height: 95vh; max-height: 95vh; border-radius: 16px;
+                        position: absolute; right: 24px; top: 20px;
+                        left: 100px; bottom: 24px; overflow: hidden;
+                    """
+                ),
                 view_func(),
                 id="main-content"
             ),

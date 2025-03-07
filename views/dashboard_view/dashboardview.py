@@ -6,7 +6,7 @@ from views.dashboard_view.widgets.progress import progress_widget
 
 def dashboard_view():
     return Div(
-        Script(src="https://unpkg.com/swapy/dist/swapy.min.js"),
+        Script(src="/views/dashboard_view/js/swapy.min.js"),
         Script("""
             document.addEventListener('DOMContentLoaded', function() {
                 const container = document.querySelector('.dashboard-container');

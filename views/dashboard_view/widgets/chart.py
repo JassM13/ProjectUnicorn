@@ -5,7 +5,7 @@ data = [3590, 5239, 3239, 2390, 1239, 5239]
 def chart_widget():
     return Card(
         Div(
-            Script(src="https://cdn.jsdelivr.net/npm/chart.js"),
+            Script(src="/views/dashboard_view/widgets/js/chart.umd.min.js"),
             Div(
                 Canvas(id="profitChart"),
                 style="height: 105%; margin: -10px;"
