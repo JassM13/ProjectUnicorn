@@ -5,9 +5,10 @@ from middleware.authorized_request import authorized_request
 def register_delete_profile_routes(rt):
     firebase_manager = FirebaseManager.getInstance()
 
-    @rt("/api/profiles/{profile_id}")
+    @rt("/api/profiles/delete/{profile_id}")
     @authorized_request
     async def delete_profile(session, request, profile_id: str):
+        print("delete_profile")
         try:
             # Get user_id from session
             user_id = session.get('user_id')
