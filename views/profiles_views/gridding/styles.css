@@ -65,6 +65,8 @@
     cursor: pointer;
     padding: 8px;
     transition: all 0.2s ease;
+    outline: none;
+    box-shadow: none;
 }
 
 .action-button img {
@@ -78,7 +80,7 @@
 }
 
 .action-button img[alt="Edit"] {
-    filter: brightness(0) saturate(100%) invert(83%) sepia(23%) saturate(638%) hue-rotate(338deg) brightness(91%) contrast(82%);
+    filter: brightness(0) saturate(100%) invert(83%) sepia(23%) saturate(638%) hue-rotate(338deg) brightness(80%) contrast(72%);
 }
 
 .action-button:hover img[alt="Remove"] {
@@ -86,7 +88,7 @@
 }
 
 .action-button img[alt="Remove"] {
-    filter: brightness(0) saturate(100%) invert(55%) sepia(75%) saturate(5338%) hue-rotate(332deg) brightness(91%) contrast(91%);
+    filter: brightness(0) saturate(100%) invert(55%) sepia(75%) saturate(5338%) hue-rotate(338deg) brightness(80%) contrast(72%);
 }
 
 tr[draggable="true"] {

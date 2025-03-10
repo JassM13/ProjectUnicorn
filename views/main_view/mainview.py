@@ -11,7 +11,7 @@ def sidebar(active):
             # Logo at the top
             Div(
                 A(Img(src="/assets/favicon.svg", alt="ProjectUnicorn Logo", width="50px", height="50px", style="border-radius: 10%;"), href="/"),
-                style="text-align:center; margin: 20px 0;"
+                style="text-align:center; margin: 10px 0;"
             ),
 
             Div(
