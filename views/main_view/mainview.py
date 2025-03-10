@@ -1,6 +1,6 @@
 from fasthtml.common import *
 from views.dashboard_view.dashboardview import dashboard_view
-from views.pages.tradesview import trades_view
+from views.trades_view.tradesview import trades_view
 from views.pages.calendarview import calendar_view
 from views.profiles_views.profilesview import profiles_view
 

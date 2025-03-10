@@ -25,16 +25,20 @@ def create_grid_table(data):
                 Td(
                     Button(
                         Img(src='/assets/svgs/Edit/Edit_Pencil.svg', alt='Edit'),
-                        style="background: none; border: none; cursor: pointer; padding: 4px;",
+                        style="background: none; border: none; cursor: pointer; padding: 4px; filter: brightness(0) saturate(100%) invert(91%) sepia(9%) saturate(2661%) hue-rotate(335deg) brightness(60%) contrast(80%);",
                         hx_get=f"/api/profiles/{item.get('id')}/edit",
-                        hx_target="#profile_form"
+                        hx_target="#profile_form",
+                        onmouseover="this.style.filter='brightness(0) saturate(100%) invert(91%) sepia(9%) saturate(2661%) hue-rotate(335deg) brightness(99%) contrast(80%)'",
+                        onmouseout="this.style.filter='brightness(0) saturate(100%) invert(91%) sepia(9%) saturate(2661%) hue-rotate(335deg) brightness(60%) contrast(80%)'"
                     ),
                     Button(
                         Img(src='/assets/svgs/User/User_Remove.svg', alt='Remove'),
-                        style="background: none; border: none; cursor: pointer; padding: 4px;",
-                        hx_delete=f"/api/profiles/{item.get('id')}",
+                        style="background: none; border: none; cursor: pointer; padding: 4px; filter: brightness(0) saturate(80%) invert(16%) sepia(99%) saturate(7444%) hue-rotate(359deg) brightness(40%) contrast(60%);",
+                        hx_post=f"/api/profiles/delete/{item.get('id')}",
                         hx_target="#profilesGrid",
-                        hx_confirm="Are you sure you want to delete this profile?"
+                        hx_confirm="Are you sure you want to delete this profile?",
+                        onmouseover="this.style.filter='brightness(0) saturate(80%) invert(16%) sepia(99%) saturate(7444%) hue-rotate(359deg) brightness(60%) contrast(80%)'",
+                        onmouseout="this.style.filter='brightness(0) saturate(80%) invert(16%) sepia(99%) saturate(7444%) hue-rotate(359deg) brightness(40%) contrast(60%)'"
                     ),
                     style="padding: 4px 0 4px 16px; border-bottom: 1px solid #2a2a2a; background-color: #000; color: #fff;"
                 )

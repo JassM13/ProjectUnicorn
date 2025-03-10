@@ -3,7 +3,7 @@ from database.firebase_manager import FirebaseManager
 from middleware.authorized_request import authorized_request
 from datetime import datetime
 import json
-from views.profiles_views.gridding.grid_utils import create_grid_table
+from views.profiles_views.gridding.grid_table import create_grid_table
 
 def register_get_profile_routes(rt):
     firebase_manager = FirebaseManager.getInstance()

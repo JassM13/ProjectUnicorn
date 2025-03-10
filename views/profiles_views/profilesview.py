@@ -8,11 +8,9 @@ def profiles_view(session=None):
     # Profiles will be loaded via HTMX from the API endpoint
     
     return Div(
-        Link(rel="stylesheet", href="/views/profiles_views/gridding/styles.css"),
-        Script(src="/views/profiles_views/gridding/grid.js"),
         Div(
             Div(
-                H2("Profiles", style="margin: 0 0 8px 0;"),
+                H2("Profiles", style="margin: 0 0 4px 0;"),
                 Button(
                     Img(src='assets/svgs/User/User_Add.svg', style="margin-right: 8px;"),
                     "New Profile",
