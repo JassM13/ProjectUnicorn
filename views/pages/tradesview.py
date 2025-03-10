@@ -186,7 +186,6 @@ def trades_view():
                 style="""
                     background: #111;
                     padding: clamp(16px, 3vh, 32px);
-                    border-radius: 16px;
                     width: 90%;
                     max-width: 600px;
                     height: auto;

@@ -210,9 +210,20 @@ def index_view():
                 style="text-align: center; position: relative; z-index: 2;"
             ),
             cls="main-container",
-            style="""padding: 20px; background-color: #000; color: white; height: 95vh;
-                border-radius: 16px; display: flex; flex-direction: column;
-                justify-content: center; align-items: center; position: absolute;
-                right: 20px; top: 20px; left: 20px; bottom: 20px;"""
+            style="""
+                /* padding: 20px; */
+                color: white;
+                height: 100vh;
+                border-radius: 16px;
+                display: flex;
+                flex-direction: column;
+                justify-content: center;
+                align-items: center;
+                /* position: absolute; */
+                right: 20px;
+                top: 20px;
+                left: 20px;
+                /* bottom: 20px; */
+                """
         )
     )

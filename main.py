@@ -22,7 +22,7 @@ app, rt = fast_app(live=bool(os.getenv("DEVELOPMENT_MODE", "false").lower() == "
                   hdrs=(picolink,
                     Style(""":root {
                                 --pico-spacing: 0rem;
-                                --primary-color: rgb(246, 205, 112);
+                                --primary-color: #000;
                                 --primary-light: rgb(246, 205, 112);
                                 --primary-dark: rgba(246, 205, 112, 0.6);
                                 --success-color: #33cc33;

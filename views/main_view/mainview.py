@@ -16,16 +16,16 @@ def sidebar(active):
 
             Div(
                 A(Img(src="/assets/svgs/Navigation/House_01.svg", alt="Dashboard"), 
-                  hx_get="/dashboard", hx_target="#main-content", hx_push_url="true",
+                  hx_get="/dashboard" if active != "dashboard" else None, hx_target="#main-content", hx_push_url="true",
                   style=f"display:block; margin: 20px 0; text-align:center; font-size:16px; color:white; opacity: {'1' if active == 'dashboard' else '0.5'};"),
                 A(Img(src="/assets/svgs/File/Notebook.svg", alt="Chat"), 
-                  hx_get="/trades", hx_target="#main-content", hx_push_url="true",
+                  hx_get="/trades" if active != "trades" else None, hx_target="#main-content", hx_push_url="true",
                   style=f"display:block; margin: 20px 0; text-align:center; font-size:16px; color:white; opacity: {'1' if active == 'trades' else '0.5'};"),
                 A(Img(src="/assets/svgs/Calendar/Calendar_Days.svg", alt="Calendar"), 
-                  hx_get="/calendar", hx_target="#main-content", hx_push_url="true",
+                  hx_get="/calendar" if active != "calendar" else None, hx_target="#main-content", hx_push_url="true",
                   style=f"display:block; margin: 20px 0; text-align:center; font-size:16px; color:white; opacity: {'1' if active == 'calendar' else '0.5'};"),
                 A(Img(src="/assets/svgs/User/Users_Group.svg", alt="Profiles"), 
-                  hx_get="/profiles", hx_target="#main-content", hx_push_url="true",
+                  hx_get="/profiles" if active != "profiles" else None, hx_target="#main-content", hx_push_url="true",
                   style=f"display:block; margin: 20px 0; text-align:center; font-size:16px; color:white; opacity: {'1' if active == 'profiles' else '0.5'};"),
             ),
 
@@ -44,6 +44,16 @@ def sidebar(active):
         )
     )
 
+def seperator():
+    return Div(
+        style="""
+        width: 2px; height: 95vh; position: fixed; 
+        left: 110px; top: 20px; 
+        background: linear-gradient(to bottom, rgba(255,255,255,0.0), rgba(255,255,255,0.4), rgba(255,255,255,0.0));
+        z-index: 10;
+        """
+    ),
+
 def mainview(active="dashboard"):
     view_map = {
         "dashboard": dashboard_view,
@@ -59,12 +69,6 @@ def mainview(active="dashboard"):
             sidebar(active=active),
             Div(
                 Div(
-                    Div(
-                        style="""background-color: #000; height: 95vh; max-height: 95vh; border-radius: 16px;
-                            position: absolute; right: 24px; top: 20px;
-                            left: 100px; bottom: 24px; overflow: hidden;
-                        """
-                    ),
                     view_func(),
                     id="main-content"
                 ),
