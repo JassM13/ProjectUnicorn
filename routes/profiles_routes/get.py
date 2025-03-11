@@ -1,5 +1,6 @@
 from fasthtml.common import *
 from database.firebase_manager import FirebaseManager
+from google.cloud.firestore import FieldFilter
 from middleware.authorized_request import authorized_request
 from datetime import datetime
 import json
@@ -11,8 +12,6 @@ def register_get_profile_routes(rt):
     @rt("/api/profiles/get")
     @authorized_request
     def get_profiles(session, request=None):
-        print(session)
-        # Fetch profiles from database if user is logged in
         profiles = []
         
         if not session or not session.get('user_id'):
@@ -22,7 +21,7 @@ def register_get_profile_routes(rt):
         user_id = session.get('user_id')
         
         # Query profiles collection for this user
-        profile_docs = firebase_manager.db.collection('profiles').where('user_id', '==', user_id).get()
+        profile_docs = firebase_manager.db.collection('profiles').where(filter=FieldFilter('user_id', '==', user_id)).get()
         
         for doc in profile_docs:
             profile_data = doc.to_dict()
@@ -61,7 +60,6 @@ def register_get_profile_routes(rt):
                         print(f"Error formatting timestamp: {str(e)}, type: {type(last_updated_timestamp)}")
                         # If there's any error in calculation, use a default value
                         last_updated = "unknown"
-            print(doc.id)
             profiles.append({
                 "id": doc.id,
                 "name": profile_data.get('profile_name', 'Unnamed Profile'),
@@ -69,8 +67,6 @@ def register_get_profile_routes(rt):
                 "last_updated": last_updated,
                 "broker_account": profile_data.get('broker_account', False)
             })
-        
-        print(profiles)
         
         # Check for API request vs HTMX request
         is_htmx_request = request and request.headers.get('HX-Request') == 'true'

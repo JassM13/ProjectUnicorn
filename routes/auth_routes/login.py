@@ -20,9 +20,7 @@ def register_login_routes(rt):
         errors = User.validate(user)
         if errors:
             return Div(errors, id="result", style="color: red;")
-        
-        print(user.identifier)
-        # Try to verify password with either username or email
+
         try:
             if '@' in user.identifier:
                 # Query user by email

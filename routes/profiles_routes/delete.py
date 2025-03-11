@@ -8,7 +8,6 @@ def register_delete_profile_routes(rt):
     @rt("/api/profiles/delete/{profile_id}", methods=['DELETE'])
     @authorized_request
     async def delete(session, request, profile_id: str):
-        print("delete_profile")
         try:
             # Get user_id from session
             user_id = session.get('user_id')

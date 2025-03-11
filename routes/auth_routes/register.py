@@ -19,7 +19,6 @@ def register_register_routes(rt):
     @rt("/auth/register")
     def post(session, user: User):
         errors = User.validate(user)
-        print(f"errors: {errors}")
         if errors:
             return Div(errors, id="result", style="color: red;")
         

@@ -65,7 +65,7 @@ def mainview(active="dashboard"):
     # Get the appropriate view function or default to dashboard
     view_func = view_map.get(active, dashboard_view)
     
-    return (Title("Hello"), Div(
+    return (Title("Dashboard"), Div(
             sidebar(active=active),
             Div(
                 Div(
