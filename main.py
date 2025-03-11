@@ -32,6 +32,18 @@ app, rt = fast_app(live=bool(os.getenv("DEVELOPMENT_MODE", "false").lower() == "
                                 --background-light: #ffffff;
                                 --background-dark: #000000;
                               }
+                          
+                              @media only screen and (prefers-color-scheme: dark) {
+                                  :root:not([data-theme]) {
+                                    --pico-muted-border-color: #00000000;
+                                  }
+                              }
+                              :root[data-theme=dark] {
+                                --pico-background-color: var(--primary-color);
+                                --text-primary: #333333;
+                                --text-secondary: #666666;
+                                --background-color: var(--background-dark);
+                              }
 
                               @media only screen and (prefers-color-scheme: dark) {
                                 :root:not([data-theme]) {

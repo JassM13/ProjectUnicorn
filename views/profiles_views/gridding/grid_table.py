@@ -18,10 +18,10 @@ def create_grid_table(data):
         Tbody(
             cls="sortable",
             *[Tr(
-                Td(item.get('name', ''), style="padding: 4px 0 4px 16px; border-bottom: 1px solid #2a2a2a; background-color: #000; color: #fff;"),
-                Td(str(item.get('trades', 0)), style="padding: 4px 0 4px 16px; border-bottom: 1px solid #2a2a2a; background-color: #000; color: #fff;"),
-                Td(item.get('last_updated', ''), style="padding: 4px 0 4px 16px; border-bottom: 1px solid #2a2a2a; background-color: #000; color: #fff;"),
-                Td('True' if item.get('broker_account') else 'False', style="padding: 4px 0 4px 16px; border-bottom: 1px solid #2a2a2a; background-color: #000; color: #fff;"),
+                Td(item.get('name', ''), style=f"padding: 4px 0 4px 16px; {'border-bottom: 1px solid #2a2a2a;' if idx < len(data or []) - 1 else ''} background-color: #000; color: #fff;"),
+                Td(str(item.get('trades', 0)), style=f"padding: 4px 0 4px 16px; {'border-bottom: 1px solid #2a2a2a;' if idx < len(data or []) - 1 else ''} background-color: #000; color: #fff;"),
+                Td(item.get('last_updated', ''), style=f"padding: 4px 0 4px 16px; {'border-bottom: 1px solid #2a2a2a;' if idx < len(data or []) - 1 else ''} background-color: #000; color: #fff;"),
+                Td('True' if item.get('broker_account') else 'False', style=f"padding: 4px 0 4px 16px; {'border-bottom: 1px solid #2a2a2a;' if idx < len(data or []) - 1 else ''} background-color: #000; color: #fff;"),
                 Td(
                     Button(
                         Img(src='/assets/svgs/Edit/Edit_Pencil.svg', alt='Edit'),
@@ -34,16 +34,18 @@ def create_grid_table(data):
                     Button(
                         Img(src='/assets/svgs/User/User_Remove.svg', alt='Remove'),
                         style="background: none; border: none; cursor: pointer; padding: 4px; filter: brightness(0) saturate(80%) invert(16%) sepia(99%) saturate(7444%) hue-rotate(359deg) brightness(40%) contrast(60%);",
-                        hx_post=f"/api/profiles/delete/{item.get('id')}",
+                        hx_delete=f"/api/profiles/delete/{item.get('id')}",
                         hx_target="#profilesGrid",
                         hx_confirm="Are you sure you want to delete this profile?",
                         onmouseover="this.style.filter='brightness(0) saturate(80%) invert(16%) sepia(99%) saturate(7444%) hue-rotate(359deg) brightness(60%) contrast(80%)'",
                         onmouseout="this.style.filter='brightness(0) saturate(80%) invert(16%) sepia(99%) saturate(7444%) hue-rotate(359deg) brightness(40%) contrast(60%)'"
                     ),
-                    style="padding: 4px 0 4px 16px; border-bottom: 1px solid #2a2a2a; background-color: #000; color: #fff;"
+                    style=f"padding: 4px 0 4px 16px; {'border-bottom: 1px solid #2a2a2a;' if idx < len(data or []) - 1 else ''} background-color: #000; color: #fff;"
                 )
-            ) for item in (data or [])]
+            ) for idx, item in enumerate(data or [])]
         ),
         cls="custom-table",
-        style="width: 100%; border-collapse: separate; border-spacing: 0; border-radius: 8px; overflow: hidden; background: #1a1a1a;"
+        style="""width: 100%; border-collapse: separate; border-spacing: 0; 
+        border-radius: 8px; border: 1.6px solid; border-color: #262626;
+        overflow: hidden; background: #1a1a1a;"""
     )

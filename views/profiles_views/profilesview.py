@@ -98,7 +98,7 @@ def profiles_view(session=None):
             display: flex;
             flex-direction: column;
             padding: 30px;
-            background-color: #000;
+            background-color: #090909;
             color: white;
             height: 95vh;
             border-radius: 16px;

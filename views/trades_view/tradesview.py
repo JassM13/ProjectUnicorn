@@ -1,5 +1,6 @@
 from fasthtml.common import *
 from views.profiles_views.popups.profile_popup import profile_popup
+from views.trades_view.popups.trade_popup import trade_popup
 
 def trades_view(session=None):
     return Div(
@@ -20,11 +21,24 @@ def trades_view(session=None):
             Div(id="tradesGrid", cls="custom-grid"),
             style="width: 100%;"
         ),
+        trade_popup(),
+        # Toggle popup script
+        Script("""
+            document.addEventListener('htmx:load', function() {
+                const addButton = document.getElementById('add_trade_button');
+                if (addButton) {
+                    addButton.addEventListener('click', function() {
+                        document.getElementById('trade_modal_overlay').classList.add('show');
+                        document.getElementById('trade_form_container').classList.add('show');
+                    });
+                }
+            });
+        """),
         style="""
             display: flex;
             flex-direction: column;
             padding: 30px;
-            background-color: #000;
+            background-color: #090909;
             color: white;
             height: 95vh;
             border-radius: 16px;
