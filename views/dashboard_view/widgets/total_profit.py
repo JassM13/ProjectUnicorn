@@ -6,7 +6,7 @@ def total_profit_widget():
             Div(
                 P("$24,680.50", style="font-size: clamp(1.6rem, 3vw, 2rem); margin: 12px 0; color: #00E676; font-weight: 700; text-shadow: 0 2px 4px rgba(0, 230, 118, 0.2);"),
                 P("+12.5% this month", style="color: #00E676; margin: 0; font-size: clamp(0.8rem, 1.5vw, 0.9rem); font-weight: 500; letter-spacing: 0.3px;"),
-                style="text-align: center; min-height: 0; background: linear-gradient(180deg, rgba(0, 230, 118, 0.1) 0%, rgba(34, 34, 34, 0) 100%); padding: 16px; border-radius: 8px;"
+                style="text-align: center; min-height: 0; background: linear-gradient(180deg, rgba(0, 230, 118, 0.1) 0%, rgba(34, 34, 34, 0) 100%); padding: 16px;"
             ),
             Div(
                 Div(

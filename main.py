@@ -1,5 +1,6 @@
 from dotenv import load_dotenv
 from fasthtml.common import *
+from monsterui.all import *
 from views.indexview import index_view
 from views.error_views.not_found import not_found
 from views.error_views.device_restriction import device_restriction
@@ -13,57 +14,17 @@ from routes.profiles_routes import register_profile_routes
 
 
 load_dotenv()
+custom_theme_css = Link(rel="stylesheet", href="static/css/theme.css", type="text/css")
 
 exception_handlers = {404: not_found,
                       422: device_restriction}
 
 app, rt = fast_app(live=bool(os.getenv("DEVELOPMENT_MODE", "false").lower() == "true"),
                   secret_key=os.getenv("SESSION_SECRET_KEY"),
-                  hdrs=(picolink,
-                    Style(""":root {
-                                --pico-spacing: 0rem;
-                                --primary-color: #000;
-                                --primary-light: rgb(246, 205, 112);
-                                --primary-dark: rgba(246, 205, 112, 0.6);
-                                --success-color: #33cc33;
-                                --error-color: #ff4444;
-                                --text-primary: #333333;
-                                --text-secondary: #666666;
-                                --background-light: #ffffff;
-                                --background-dark: #000000;
-                              }
-                          
-                              @media only screen and (prefers-color-scheme: dark) {
-                                  :root:not([data-theme]) {
-                                    --pico-muted-border-color: #00000000;
-                                  }
-                              }
-                              :root[data-theme=dark] {
-                                --pico-background-color: var(--primary-color);
-                                --text-primary: #333333;
-                                --text-secondary: #666666;
-                                --background-color: var(--background-dark);
-                              }
-
-                              @media only screen and (prefers-color-scheme: dark) {
-                                :root:not([data-theme]) {
-                                  --pico-background-color: var(--primary-color);
-                                  --text-primary: #333333;
-                                  --text-secondary: #666666;
-                                  --background-color: var(--background-dark);
-                                }
-                              }
-
-                              @media only screen and (prefers-color-scheme: light) {
-                                :root:not([data-theme]) {
-                                  --pico-background-color: var(--background-light);
-                                  --text-primary: #333333;
-                                  --text-secondary: #666666;
-                                  --background-color: var(--background-light);
-                                }
-                              }"""),
-                    SortableJS('.sortable')),
-                    exception_handlers=exception_handlers
+                  pico=False, 
+                  hdrs=(*Theme.neutral.headers(), Link(rel="icon", type="image/x-icon", href="/assets/favicon.svg"),
+                        Link(rel="stylesheet", href="/static/css/theme.css", type="text/css")), 
+                  exception_handlers=exception_handlers
                )
 
 app.title="ProfitPath"

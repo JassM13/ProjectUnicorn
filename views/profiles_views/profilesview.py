@@ -1,12 +1,9 @@
 from fasthtml.common import *
-import json
+from monsterui.all import *
 from views.profiles_views.popups.profile_popup import profile_popup
 from views.profiles_views.gridding.grid_table import create_grid_table
 
 def profiles_view(session=None):
-    # Initialize with empty profiles array
-    # Profiles will be loaded via HTMX from the API endpoint
-    
     return Div(
         Div(
             Div(
@@ -95,18 +92,9 @@ def profiles_view(session=None):
             });
         """),
         style="""
-            display: flex;
-            flex-direction: column;
-            padding: 30px;
-            background-color: #090909;
-            color: white;
-            height: 95vh;
-            border-radius: 16px;
-            position: absolute;
-            right: 20px;
-            top: 20px;
-            left: 100px;
-            bottom: 20px;
-            overflow: auto;
+            display: flex; flex-direction: column; padding: 30px; color: white;
+            height: 95vh; border-radius: 16px; position: absolute; right: 20px;
+            top: 20px; left: 100px; bottom: 20px; overflow: auto;
+            border: 1px solid rgba(255, 255, 255, 0.1);
         """
     )

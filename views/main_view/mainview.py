@@ -1,7 +1,8 @@
 from fasthtml.common import *
+from monsterui.all import *
 from views.dashboard_view.dashboardview import dashboard_view
 from views.trades_view.tradesview import trades_view
-from views.pages.calendarview import calendar_view
+from views.calendar_view.calendarview import calendar_view
 from views.profiles_views.profilesview import profiles_view
 
 def sidebar(active):
@@ -39,7 +40,9 @@ def sidebar(active):
                 width: 70px; height: 95vh; background-color: #000; position: fixed; 
                 top: 20px; left: 20px; display: flex; flex-direction: column; 
                 justify-content: space-between; color:white; 
-                padding: 20px; border-radius: 16px; 
+                padding: 20px; border-radius: 16px;
+                border: 1px solid rgba(255, 255, 255, 0.1);
+                box-shadow: 0 1px 2px 0 rgb(0 0 0 / 0.05);
             """
         )
     )

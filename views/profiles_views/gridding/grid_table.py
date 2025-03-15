@@ -46,6 +46,6 @@ def create_grid_table(data):
         ),
         cls="custom-table",
         style="""width: 100%; border-collapse: separate; border-spacing: 0; 
-        border-radius: 8px; border: 1.6px solid; border-color: #262626;
-        overflow: hidden; background: #1a1a1a;"""
+        border-radius: 8px; overflow: hidden; background: #1a1a1a;"""
+        
     )
