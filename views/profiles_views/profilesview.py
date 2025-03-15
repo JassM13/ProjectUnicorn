@@ -1,5 +1,4 @@
 from fasthtml.common import *
-from monsterui.all import *
 from views.profiles_views.popups.profile_popup import profile_popup
 from views.profiles_views.gridding.grid_table import create_grid_table
 
@@ -24,72 +23,50 @@ def profiles_view(session=None):
             Div(
                 # Display a loading message until HTMX loads the data
                 Div("Loading profiles...", style="text-align: center; padding: 20px;"),
+                # Add a loading indicator
+                Div(
+                    Div(style="width: 50px; height: 50px; border: 5px solid #f3f3f3; border-top: 5px solid #f6cd70; border-radius: 50%; animation: spin 1s linear infinite;"),
+                    style="display: none; position: absolute; top: 0; left: 0; width: 100%; height: 100%; background-color: rgba(0,0,0,0.5); justify-content: center; align-items: center; z-index: 1000;",
+                    id="loading-overlay"
+                ),
                 id="profilesGrid",
                 hx_get="/api/profiles/get",
-                hx_trigger="load",
+                hx_trigger="load, profileCreated from:body, profileDeleted from:body",
                 hx_swap="innerHTML"
             ),
             style="width: 100%;"
         ),
         profile_popup(),
-        # Modal event handling script
+        # Toggle popup script
         Script("""
-            function showProfileModal() {
-                const modalOverlay = document.getElementById('profile_modal_overlay');
-                const modal = document.querySelector('#profile_popup_container > div:first-child');
-                
-                if (!modalOverlay || !modal) return;
-                
-                modalOverlay.style.opacity = '1';
-                modalOverlay.style.visibility = 'visible';
-                modal.style.opacity = '1';
-                modal.style.visibility = 'visible';
-                modal.style.transform = 'translate(-50%, -50%) scale(1)';
+            function closeProfileModal() {
+                document.getElementById('profile_modal_overlay').style.opacity = '0';
+                document.getElementById('profile_modal_overlay').style.visibility = 'hidden';
+                document.querySelector('#modal_content').style.opacity = '0';
+                document.querySelector('#modal_content').style.visibility = 'hidden';
+                document.querySelector('#modal_content').style.transform = 'translate(-50%, -50%) scale(0.8)';
+                document.getElementById('profile_form').reset();
             }
-            
-            function hideProfileModal() {
-                const modalOverlay = document.getElementById('profile_modal_overlay');
-                const modal = document.querySelector('#profile_popup_container > div:first-child');
-                const profileForm = document.getElementById('profile_form');
-                
-                if (!modalOverlay || !modal) return;
-                
-                modalOverlay.style.opacity = '0';
-                modalOverlay.style.visibility = 'hidden';
-                modal.style.opacity = '0';
-                modal.style.visibility = 'hidden';
-                modal.style.transform = 'translate(-50%, -50%) scale(0.8)';
-                if (profileForm) profileForm.reset();
-            }
-            
-            // Set up event listeners when the document is loaded
+
             document.addEventListener('htmx:load', function() {
-                // Setup modal event listeners
                 const addButton = document.getElementById('add_profile_button');
-                const cancelButton = document.getElementById('cancel_profile_button');
-                const modalOverlay = document.getElementById('profile_modal_overlay');
-                
-                if (addButton) addButton.addEventListener('click', showProfileModal);
-                if (cancelButton) cancelButton.addEventListener('click', hideProfileModal);
-                if (modalOverlay) modalOverlay.addEventListener('click', function(e) {
-                    if (e.target === modalOverlay) hideProfileModal();
-                });
-            });
-            
-            // Refresh profiles after successful profile creation
-            document.addEventListener('htmx:afterRequest', function(event) {
-                if (event.detail.target && event.detail.target.id === 'profile_form_alert') {
-                    // Check if the response indicates success
-                    if (event.detail.xhr.responseText.includes('successfully')) {
-                        // Hide modal after successful profile creation
-                        setTimeout(function() {
-                            hideProfileModal();
-                            // Refresh profiles by triggering a GET request on the profilesGrid
-                            htmx.trigger('#profilesGrid', 'htmx:refresh');
-                        }, 1500); // Short delay to allow user to see success message
-                    }
+                if (addButton) {
+                    addButton.addEventListener('click', function() {
+                        document.getElementById('profile_modal_overlay').style.opacity = '1';
+                        document.getElementById('profile_modal_overlay').style.visibility = 'visible';
+                        document.querySelector('#modal_content').style.opacity = '1';
+                        document.querySelector('#modal_content').style.visibility = 'visible';
+                        document.querySelector('#modal_content').style.transform = 'translate(-50%, -50%) scale(1)';
+                    });
                 }
             });
+        """),
+        # Add CSS for spinner animation
+        Style("""
+            @keyframes spin {
+                0% { transform: rotate(0deg); }
+                100% { transform: rotate(360deg); }
+            }
         """),
         style="""
             display: flex; flex-direction: column; padding: 30px; color: white;

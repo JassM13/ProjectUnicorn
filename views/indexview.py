@@ -1,5 +1,4 @@
 from fasthtml.common import *
-from monsterui.all import *
 
 def index_view():
     return Div(

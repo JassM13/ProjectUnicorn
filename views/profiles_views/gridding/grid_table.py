@@ -37,6 +37,9 @@ def create_grid_table(data):
                         hx_delete=f"/api/profiles/delete/{item.get('id')}",
                         hx_target="#profilesGrid",
                         hx_confirm="Are you sure you want to delete this profile?",
+                        hx_indicator="#loading-overlay",
+                        # Trigger a custom event after successful deletion
+                        hx_on__htmx_after_request="if(event.detail.successful) { document.body.dispatchEvent(new CustomEvent('profileDeleted')); }",
                         onmouseover="this.style.filter='brightness(0) saturate(80%) invert(16%) sepia(99%) saturate(7444%) hue-rotate(359deg) brightness(60%) contrast(80%)'",
                         onmouseout="this.style.filter='brightness(0) saturate(80%) invert(16%) sepia(99%) saturate(7444%) hue-rotate(359deg) brightness(40%) contrast(60%)'"
                     ),

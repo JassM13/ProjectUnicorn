@@ -1,5 +1,4 @@
 from fasthtml.common import *
-from monsterui.all import *
 from views.profiles_views.popups.profile_popup import profile_popup
 from views.trades_view.popups.trade_popup import trade_popup
 

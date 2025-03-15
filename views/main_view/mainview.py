@@ -1,5 +1,4 @@
 from fasthtml.common import *
-from monsterui.all import *
 from views.dashboard_view.dashboardview import dashboard_view
 from views.trades_view.tradesview import trades_view
 from views.calendar_view.calendarview import calendar_view
@@ -46,16 +45,6 @@ def sidebar(active):
             """
         )
     )
-
-def seperator():
-    return Div(
-        style="""
-        width: 2px; height: 95vh; position: fixed; 
-        left: 110px; top: 20px; 
-        background: linear-gradient(to bottom, rgba(255,255,255,0.0), rgba(255,255,255,0.4), rgba(255,255,255,0.0));
-        z-index: 10;
-        """
-    ),
 
 def mainview(active="dashboard"):
     view_map = {

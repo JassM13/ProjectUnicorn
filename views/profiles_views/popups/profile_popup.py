@@ -2,8 +2,10 @@ from fasthtml.common import *
 
 def profile_popup():
     return Div(
+        # Modal overlay with HTMX attributes for showing/hiding
         Div(
             id="profile_modal_overlay",
+            hx_swap_oob="true",
             style="""
                 position: fixed;
                 top: 0;
@@ -18,7 +20,15 @@ def profile_popup():
                 opacity: 0;
                 visibility: hidden;
                 transition: opacity 0.3s ease, visibility 0.3s ease;
-            """
+            """,
+            # Close modal when clicking on overlay
+            hx_on__click="""if(event.target === this) {
+                this.style.opacity = '0';
+                this.style.visibility = 'hidden';
+                document.querySelector('#modal_content').style.opacity = '0';
+                document.querySelector('#modal_content').style.visibility = 'hidden';
+                document.querySelector('#modal_content').style.transform = 'translate(-50%, -50%) scale(0.8)';
+            }"""
         ),
         
         # Profile Form Container
@@ -44,7 +54,6 @@ def profile_popup():
                         style="""
                             color: white;
                             border-radius: 8px;
-                            padding: 12px;
                             margin-bottom: 16px;
                         """
                     ),
@@ -53,8 +62,9 @@ def profile_popup():
                         Button(
                             "Cancel",
                             type="button",
-                            id="cancel_profile_button",
-                            style="padding: 12px 24px; background: #333; color: white; border: none; border-radius: 8px; cursor: pointer; margin-right: 10px;"
+                            style="padding: 12px 24px; background: #333; color: white; border: none; border-radius: 8px; cursor: pointer; margin-right: 10px;",
+                            # Close modal with HTMX
+                            onclick="closeProfileModal()"
                         ),
                         Button(
                             "Create Profile",
@@ -68,8 +78,26 @@ def profile_popup():
                     style="width: 100%;",
                     hx_post="/api/profiles",
                     hx_target="#profile_form_alert",
-                    hx_swap="innerHTML"
+                    hx_swap="innerHTML",
+                    # After successful submission, trigger profile refresh and close modal
+                    hx_on__htmx_after_request="""
+                        if(event.detail.successful && event.detail.xhr.responseText.includes('successfully')) {
+                            setTimeout(function() {
+                                // Hide modal
+                                document.getElementById('profile_modal_overlay').style.opacity = '0';
+                                document.getElementById('profile_modal_overlay').style.visibility = 'hidden';
+                                document.querySelector('#modal_content').style.opacity = '0';
+                                document.querySelector('#modal_content').style.visibility = 'hidden';
+                                document.querySelector('#modal_content').style.transform = 'translate(-50%, -50%) scale(0.8)';
+                                // Reset form
+                                document.getElementById('profile_form').reset();
+                                // Trigger refresh event
+                                document.body.dispatchEvent(new CustomEvent('profileCreated'));
+                            }, 1500);
+                        }
+                    """
                 ),
+                id="modal_content",
                 style="""
                     background: #111;
                     padding: 24px;

@@ -2,4 +2,3 @@ python-fasthtml
 firebase-admin
 PyJWT
 bcrypt
-MonsterUI
