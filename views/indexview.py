@@ -4,6 +4,7 @@ from monsterui.all import *
 def index_view():
     return Div(
         # Theme toggle and styling
+        # Theme toggle and styling
         Style("""
             @keyframes fadeIn {
                 from { opacity: 0; transform: translateY(20px); }
@@ -19,24 +20,24 @@ def index_view():
             # Hero Section
             Div(
                 H2("Welcome to ProfitPath",
-                   style="font-size: 3.5em; font-weight: 800; color: hsl(var(--primary)); margin-bottom: 20px;",
+                   style="font-size: 3.5em; font-weight: 800; color: var(--text-primary); margin-bottom: 20px;",
                    cls="animate-fade-in"),
                 P("Your Journey to Financial Success Starts Here",
-                  style="font-size: 1.5em; color: white; margin-bottom: 40px;",
+                  style="font-size: 1.5em; color: var(--text-secondary); margin-bottom: 40px;",
                   cls="animate-fade-in"),
                 
                 # CTA Buttons
                 Div(
                     A(Button("Get Started",
-                            style="background: hsl(var(--primary)); color: hsl(var(--background)); \
+                            style="background: var(--text-primary); color: var(--background-color); \
                                    padding: 15px 40px; border-radius: 30px; font-weight: 600; \
-                                   transition: all 0.3s ease;"),
+                                   border: 2px solid var(--text-primary); transition: all 0.3s ease;"),
                       href="/register",
                       style="text-decoration: none; margin-right: 20px;"),
                     A(Button("Login",
-                            style="background: transparent; color: hsl(var(--primary)); \
+                            style="background: transparent; color: var(--text-primary); \
                                    padding: 14px 38px; border-radius: 30px; font-weight: 600; \
-                                   border: 2px solid hsl(var(--primary)); transition: all 0.3s ease;"),
+                                   border: 2px solid var(--text-primary); transition: all 0.3s ease;"),
                       href="/login",
                       style="text-decoration: none;"),
                     style="display: flex; justify-content: center; margin-bottom: 60px;",
@@ -47,9 +48,9 @@ def index_view():
                 Div(
                     *[Div(
                         H3(title,
-                           style="font-size: 1.5em; color: hsl(var(--primary)); margin-bottom: 15px;"),
+                           style="font-size: 1.5em; color: var(--text-primary); margin-bottom: 15px;"),
                         P(description,
-                          style="color: hsl(var(--secondary-foreground)); line-height: 1.6;"),
+                          style="color: var(--text-secondary); line-height: 1.6;"),
                         style="background: rgba(246, 205, 112, 0.1); padding: 30px; border-radius: 15px; \
                                text-align: center; transition: transform 0.3s ease;",
                         cls="animate-fade-in"

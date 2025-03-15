@@ -1,6 +1,5 @@
 from dotenv import load_dotenv
 from fasthtml.common import *
-from monsterui.all import *
 from views.indexview import index_view
 from views.error_views.not_found import not_found
 from views.error_views.device_restriction import device_restriction
@@ -21,10 +20,11 @@ exception_handlers = {404: not_found,
 
 app, rt = fast_app(live=bool(os.getenv("DEVELOPMENT_MODE", "false").lower() == "true"),
                   secret_key=os.getenv("SESSION_SECRET_KEY"),
-                  pico=False, 
-                  hdrs=(*Theme.neutral.headers(), Link(rel="icon", type="image/x-icon", href="/assets/favicon.svg"),
-                        Link(rel="stylesheet", href="/static/css/theme.css", type="text/css")), 
-                  exception_handlers=exception_handlers
+                  hdrs=(picolink,
+                    Link(rel="stylesheet", href="/static/css/theme.css", type="text/css"),
+                    Link(rel="icon", type="image/x-icon", href="/assets/favicon.svg"),
+                    SortableJS('.sortable')),
+                    exception_handlers=exception_handlers
                )
 
 app.title="ProfitPath"
