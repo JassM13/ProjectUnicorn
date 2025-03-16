@@ -39,24 +39,12 @@ def profiles_view(session=None):
         profile_popup(),
         # Toggle popup script
         Script("""
-            function closeProfileModal() {
-                document.getElementById('profile_modal_overlay').style.opacity = '0';
-                document.getElementById('profile_modal_overlay').style.visibility = 'hidden';
-                document.querySelector('#modal_content').style.opacity = '0';
-                document.querySelector('#modal_content').style.visibility = 'hidden';
-                document.querySelector('#modal_content').style.transform = 'translate(-50%, -50%) scale(0.8)';
-                document.getElementById('profile_form').reset();
-            }
-
             document.addEventListener('htmx:load', function() {
                 const addButton = document.getElementById('add_profile_button');
                 if (addButton) {
                     addButton.addEventListener('click', function() {
-                        document.getElementById('profile_modal_overlay').style.opacity = '1';
-                        document.getElementById('profile_modal_overlay').style.visibility = 'visible';
-                        document.querySelector('#modal_content').style.opacity = '1';
-                        document.querySelector('#modal_content').style.visibility = 'visible';
-                        document.querySelector('#modal_content').style.transform = 'translate(-50%, -50%) scale(1)';
+                        document.getElementById('profile_modal_overlay').classList.add('show');
+                        document.getElementById('profile_form_container').classList.add('show');
                     });
                 }
             });
