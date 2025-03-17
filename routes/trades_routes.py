@@ -11,7 +11,7 @@ def register_trades_routes(rt):
     @authorized_request
     @restrict_small_devices()
     def get(session):
-        return mainview(active="trades")
+        return mainview(session, active="trades")
     
     # Temporarily disabled /api/trades endpoint
     @rt("/api/trades")

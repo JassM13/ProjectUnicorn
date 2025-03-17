@@ -1,6 +1,7 @@
 from fasthtml.common import *
 
-def index_view():
+def index_view(session):
+    is_authenticated = bool(session and session.get('auth_token'))
     return Div(
         # Theme toggle and styling
         # Theme toggle and styling
@@ -27,17 +28,17 @@ def index_view():
                 
                 # CTA Buttons
                 Div(
-                    A(Button("Get Started",
+                    A(Button("Dashboard" if is_authenticated else "Get Started",
                             style="background: var(--text-primary); color: var(--background-color); \
                                    padding: 15px 40px; border-radius: 30px; font-weight: 600; \
                                    border: 2px solid var(--text-primary); transition: all 0.3s ease;"),
-                      href="/register",
+                      href="/dashboard" if is_authenticated else "/register",
                       style="text-decoration: none; margin-right: 20px;"),
-                    A(Button("Login",
+                    A(Button("Logout" if is_authenticated else "Login",
                             style="background: transparent; color: var(--text-primary); \
                                    padding: 14px 38px; border-radius: 30px; font-weight: 600; \
                                    border: 2px solid var(--text-primary); transition: all 0.3s ease;"),
-                      href="/login",
+                      href="/logout" if is_authenticated else "/login",
                       style="text-decoration: none;"),
                     style="display: flex; justify-content: center; margin-bottom: 60px;",
                     cls="animate-fade-in"

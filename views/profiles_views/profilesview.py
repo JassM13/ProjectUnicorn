@@ -2,7 +2,7 @@ from fasthtml.common import *
 from views.profiles_views.popups.profile_popup import profile_popup
 from views.profiles_views.gridding.grid_table import create_grid_table
 
-def profiles_view(session=None):
+def profiles_view(session):
     return Div(
         Div(
             Div(

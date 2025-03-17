@@ -8,12 +8,12 @@ def register_dashboard_routes(rt):
     @authorized_request
     @restrict_small_devices()
     def get(session):
-        return mainview(active="dashboard")
+        return mainview(session, active="dashboard")
 
     @rt("/calendar")
     @authorized_request
     @restrict_small_devices()
     def get(session):
-        return mainview(active="calendar")
+        return mainview(session, active="calendar")
 
     return rt

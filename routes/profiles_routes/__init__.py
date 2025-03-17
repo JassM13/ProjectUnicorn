@@ -9,7 +9,7 @@ def register_profile_routes(rt):
     @rt("/profiles")
     @authorized_request
     def get(session):
-        return mainview(active="profiles")
+        return mainview(session, active="profiles")
     
     # Register all profile-related routes
     rt = register_create_profile_routes(rt)

@@ -14,7 +14,7 @@ def get_calendar_data(year=None, month=None):
     month_name = calendar.month_name[month]
     return cal, month_name, year, today
 
-def calendar_view():
+def calendar_view(session):
     cal, month_name, year, today = get_calendar_data()
     month = today.month
     

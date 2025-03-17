@@ -10,6 +10,7 @@ from routes.dashboard_routes import register_dashboard_routes
 from routes.trades_routes import register_trades_routes
 from routes.exceptions_routes import register_exception_routes
 from routes.profiles_routes import register_profile_routes
+from routes.account_routes import register_account_routes
 
 
 load_dotenv()
@@ -35,11 +36,12 @@ rt = register_dashboard_routes(rt)
 rt = register_trades_routes(rt)
 rt = register_exception_routes(rt)
 rt = register_profile_routes(rt)
+rt = register_account_routes(rt)
 
 # Default route
 @rt("/")
-def get_home():
-    return index_view()
+def get_home(session):
+    return index_view(session)
 
 # Serve the app
 serve()

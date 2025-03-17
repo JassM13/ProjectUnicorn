@@ -3,6 +3,7 @@ from views.dashboard_view.dashboardview import dashboard_view
 from views.trades_view.tradesview import trades_view
 from views.calendar_view.calendarview import calendar_view
 from views.profiles_views.profilesview import profiles_view
+from views.account_views.accountview import accountview
 
 def sidebar(active):
     return Div(
@@ -31,7 +32,9 @@ def sidebar(active):
 
             # User Profile at the bottom
             Div(
-                A(Img(src="/assets/svgs/User/User_Circle.svg", alt="Account"), href="/account", style="display:block; margin-top: 20px 0; text-align:center; font-size:16px; color:white; opacity: 1;"),
+                A(Img(src="/assets/svgs/User/User_Circle.svg", alt="Account"), 
+                  hx_get="/account" if active != "account" else None, hx_target="#main-content", hx_push_url="true",
+                  style=f"display:block; margin: 20px 0; text-align:center; font-size:16px; color:white; opacity: {'1' if active == 'account' else '0.5'};"),
             ),
 
             # Sidebar Styling
@@ -46,12 +49,13 @@ def sidebar(active):
         )
     )
 
-def mainview(active="dashboard"):
+def mainview(session, active="dashboard"):
     view_map = {
         "dashboard": dashboard_view,
         "trades": trades_view,
         "calendar": calendar_view,
-        "profiles": profiles_view
+        "profiles": profiles_view,
+        "account": accountview
     }
     
     # Get the appropriate view function or default to dashboard
@@ -61,7 +65,7 @@ def mainview(active="dashboard"):
             sidebar(active=active),
             Div(
                 Div(
-                    view_func(),
+                    view_func(session),
                     id="main-content"
                 ),
                 style="margin-left: 100px;"

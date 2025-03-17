@@ -34,7 +34,7 @@ def register_view():
                            border: none; border-radius: 8px; font-weight: bold; cursor: pointer; \
                            transition: all 0.3s ease;"
                 ),
-                style="width: 100%; max-width: 400px;"
+                style="width: 100%; max-width: 400px; padding: 0 20px;"
             ),
             Div(
                 P(
@@ -51,8 +51,11 @@ def register_view():
         style="""
                 background-color: #000;
                 color: white;
-                height: 100vh;
-                border-radius: 16px;
+                min-height: 100vh;
+                width: 100%;
+                max-width: 100%;
+                padding: 20px;
+                box-sizing: border-box;
                 display: flex;
                 flex-direction: column;
                 justify-content: center;
