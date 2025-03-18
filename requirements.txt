@@ -2,3 +2,4 @@ python-fasthtml
 firebase-admin
 PyJWT
 bcrypt
+fh_plotly

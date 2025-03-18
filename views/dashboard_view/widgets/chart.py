@@ -1,111 +1,56 @@
 from fasthtml.common import *
+from fh_plotly import plotly2fasthtml
+import plotly.express as px
+import pandas as pd
+import numpy as np
 
-data = [3590, 5239, 3239, 2390, 1239, 5239]
+def generate_line_chart():
+    data = [3590, 5239, 3239, 2390, 1239, 5239]
+    df = pd.DataFrame({
+        'Day': [f'Day {i+1}' for i in range(len(data))],
+        'Profit': data
+    })
+    fig = px.line(df, x='Day', y='Profit',
+                  line_shape='spline',
+                  template='plotly_dark')
+    fig.update_traces(
+        line_color='rgba(246, 205, 112, 0.6)',
+        fill='tozeroy',
+        fillcolor='rgba(246, 205, 112, 0.2)',
+        mode='lines+markers',
+        hovertemplate='Profit: $%{y}<br>Day: %{x}'
+    )
+    fig.update_layout(
+        plot_bgcolor='rgba(0,0,0,0)',
+        paper_bgcolor='rgba(0,0,0,0)',
+        margin=dict(l=0, r=0, t=20, b=40),
+        showlegend=False,
+        xaxis=dict(showgrid=False, zeroline=False, showticklabels=False),
+        yaxis=dict(showgrid=False, zeroline=False, showticklabels=False),
+        #autosize=True
+    )
+    fig.update_layout(
+        modebar_remove=[
+            'toImage', 'zoom', 'pan', 
+            'select', 'lasso2d', 'zoomIn2d', 
+            'zoomOut2d', 'autoScale2d', 'resetScale2d'
+        ],
+        dragmode='pan',
+        yaxis_title_text=None,
+        xaxis_title_text=None,
+        yaxis_fixedrange=True,
+        xaxis_fixedrange=True,
+        )
+    return fig
 
 def chart_widget():
     return Card(
         Div(
-            Script(src="/views/dashboard_view/widgets/js/chart.umd.min.js"),
-            Div(
-                Canvas(id="profitChart"),
-                style="height: 105%; margin: -10px;"
-            ),
-            Script(f"""
-                // Use window-scoped variable to prevent redeclaration errors
-                if (typeof window.profitChartInstance === 'undefined') {{
-                    window.profitChartInstance = null;
-                }}
-                
-                // Also use window-scoped observer to prevent redeclaration errors
-                if (typeof window.profitChartObserver === 'undefined') {{
-                    window.profitChartObserver = null;
-                }}
-                
-                function initializeChart() {{
-                    const canvas = document.getElementById('profitChart');
-                    if (!canvas) return;
-                    
-                    const ctx = canvas.getContext('2d');
-                    if (window.profitChartInstance) {{
-                        window.profitChartInstance.destroy();
-                    }}
-                    
-                    const data = {{
-                        labels: ['Day 1', 'Day 2', 'Day 3', 'Day 4', 'Day 5', 'Day 6'],
-                        datasets: [{{
-                            label: 'Daily Profit',
-                            data: {data},
-                            fill: true,
-                            backgroundColor: 'rgba(246, 205, 112, 0.2)',
-                            borderColor: 'rgba(246,205,112, 0.6)',
-                            tension: 0.4
-                        }}]
-                    }};
-
-                    const config = {{
-                        type: 'line',
-                        data: data,
-                        options: {{
-                            responsive: true,
-                            maintainAspectRatio: false,
-                            animation: false,
-                            plugins: {{
-                                legend: {{
-                                    display: false
-                                }}
-                            }},
-                            scales: {{
-                                y: {{
-                                    display: false,
-                                    beginAtZero: true,
-                                    grid: {{
-                                        display: false,
-                                        drawBorder: false
-                                    }}
-                                }},
-                                x: {{
-                                    display: false,
-                                    grid: {{
-                                        display: false,
-                                        drawBorder: false
-                                    }}
-                                }}
-                            }},
-                            layout: {{
-                                padding: 0
-                            }}
-                        }}
-                    }};
-
-                    window.profitChartInstance = new Chart(ctx, config);
-                }}
-
-                // Initialize chart when HTMX loads content
-                document.addEventListener('htmx:load', function() {{
-                    // Add a small delay to ensure canvas is available
-                    setTimeout(initializeChart, 100);
-                }});
-
-                // Initialize chart when element becomes visible
-                if (window.profitChartObserver) {{
-                    window.profitChartObserver.disconnect();
-                }}
-                
-                window.profitChartObserver = new MutationObserver((mutations) => {{
-                    mutations.forEach((mutation) => {{
-                        if (mutation.type === 'childList' && document.getElementById('profitChart')) {{
-                            initializeChart();
-                        }}
-                    }});
-                }});
-
-                // Start observing the document for DOM changes
-                window.profitChartObserver.observe(document.documentElement, {{
-                    childList: true,
-                    subtree: true
-                }});
-            """),
-            style="height: 100%; width: 100%;"
+            plotly2fasthtml(generate_line_chart()),
+            id="chart-container",
+            hx_get="/api/chart/refresh",
+            hx_trigger="resize from:window",
+            hx_swap="innerHTML"
         ),
         style="background-color: #000; height: 100%; overflow: hidden;"
     )
