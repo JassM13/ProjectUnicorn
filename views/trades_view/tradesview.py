@@ -14,7 +14,8 @@ def trades_view(session=None):
                     style="""background-color: #f6cd70; color: black; border: none; 
                            border-radius: 16px; padding: 8px 16px; font-size: 14px; 
                            font-weight: 600; cursor: pointer; margin-bottom: 8px;
-                           display: flex; align-items: center; justify-content: center;"""
+                           display: flex; align-items: center; justify-content: center;""",
+                    hx_on_click="document.getElementById('trade_modal_overlay').classList.add('show'); document.getElementById('trade_form_container').classList.add('show');"
                 ),
                 style="display: flex; align-items: center; justify-content: space-between; margin-bottom: 24px;"
             ),
@@ -22,18 +23,7 @@ def trades_view(session=None):
             style="width: 100%;"
         ),
         trade_popup(),
-        # Toggle popup script
-        Script("""
-            document.addEventListener('htmx:load', function() {
-                const addButton = document.getElementById('add_trade_button');
-                if (addButton) {
-                    addButton.addEventListener('click', function() {
-                        document.getElementById('trade_modal_overlay').classList.add('show');
-                        document.getElementById('trade_form_container').classList.add('show');
-                    });
-                }
-            });
-        """),
+        # No script tag needed - using inline hx_on_click instead
         style="""
             display: flex; flex-direction: column; padding: 30px;
             color: white; height: 95vh; border-radius: 16px;

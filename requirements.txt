@@ -5,3 +5,4 @@ bcrypt
 fh_plotly
 numpy
 pandas
+stripe

@@ -51,7 +51,10 @@ def index_view(session):
                            style="font-size: 1.5em; color: var(--text-primary); margin-bottom: 15px;"),
                         P(description,
                           style="color: var(--text-secondary); line-height: 1.6;"),
-                        style="background: rgba(246, 205, 112, 0.1); padding: 30px; border-radius: 15px; \
+                        style="background: rgba(26, 26, 26, 0.8); padding: 24px; border-radius: 16px; \
+                               backdrop-filter: blur(12px); -webkit-backdrop-filter: blur(12px); \
+                               border: 1px solid rgba(255, 255, 255, 0.1); \
+                               box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06); \
                                text-align: center; transition: transform 0.3s ease;",
                         cls="animate-fade-in"
                     ) for title, description in [

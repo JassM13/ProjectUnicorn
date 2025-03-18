@@ -14,7 +14,8 @@ def profiles_view(session):
                     style="""background-color: #f6cd70; color: black; border: none; 
                            border-radius: 16px; padding: 8px 16px; font-size: 14px; 
                            font-weight: 600; cursor: pointer; margin-bottom: 8px;
-                           display: flex; align-items: center; justify-content: center;"""
+                           display: flex; align-items: center; justify-content: center;""",
+                    hx_on_click="document.getElementById('profile_modal_overlay').classList.add('show'); document.getElementById('profile_form_container').classList.add('show');"
                 ),
                 style="display: flex; align-items: center; justify-content: space-between; margin-bottom: 24px;"
             ),
@@ -37,18 +38,7 @@ def profiles_view(session):
             style="width: 100%;"
         ),
         profile_popup(),
-        # Toggle popup script
-        Script("""
-            document.addEventListener('htmx:load', function() {
-                const addButton = document.getElementById('add_profile_button');
-                if (addButton) {
-                    addButton.addEventListener('click', function() {
-                        document.getElementById('profile_modal_overlay').classList.add('show');
-                        document.getElementById('profile_form_container').classList.add('show');
-                    });
-                }
-            });
-        """),
+        # No script tag needed - using inline hx_on_click instead
         # Add CSS for spinner animation
         Style("""
             @keyframes spin {
