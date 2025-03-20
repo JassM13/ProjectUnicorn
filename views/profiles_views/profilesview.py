@@ -5,23 +5,23 @@ def profiles_view(session):
     return Div(
         Div(
             Div(
-                Script(
-                    src="/views/profiles_views/gridding/grid_table.js"
+                Div(
+                    Script(
+                        src="/views/profiles_views/gridding/grid_table.js"
+                    ),
+                    H2("Profiles", style="margin: 0 0 4px 0;"),
+                    Button(
+                        Img(src='assets/svgs/User/User_Add.svg', style="margin-right: 8px;"),
+                        "New Profile",
+                        id="add_profile_button",
+                        style="""background-color: #f6cd70; color: black; border: none; 
+                            border-radius: 16px; padding: 8px 16px; font-size: 14px; 
+                            font-weight: 600; cursor: pointer; margin-bottom: 8px;
+                            display: flex; align-items: center; justify-content: center;""",
+                        hx_on_click="document.getElementById('profile_modal_overlay').classList.add('show'); document.getElementById('profile_form_container').classList.add('show');"
+                    ),
+                    style="display: flex; align-items: center; justify-content: space-between; margin-bottom: 24px;"
                 ),
-                H2("Profiles", style="margin: 0 0 4px 0;"),
-                Button(
-                    Img(src='assets/svgs/User/User_Add.svg', style="margin-right: 8px;"),
-                    "New Profile",
-                    id="add_profile_button",
-                    style="""background-color: #f6cd70; color: black; border: none; 
-                           border-radius: 16px; padding: 8px 16px; font-size: 14px; 
-                           font-weight: 600; cursor: pointer; margin-bottom: 8px;
-                           display: flex; align-items: center; justify-content: center;""",
-                    hx_on_click="document.getElementById('profile_modal_overlay').classList.add('show'); document.getElementById('profile_form_container').classList.add('show');"
-                ),
-                style="display: flex; align-items: center; justify-content: space-between; margin-bottom: 24px;"
-            ),
-            Div(
                 Div(
                     class_="loading-spinner",
                     style="""
@@ -39,9 +39,9 @@ def profiles_view(session):
                 Div(
                     x_html="createGridTable(profiles)",
                     x_show="!loading",
-                    style="height: 100%; width: 100%;"
+                    style="width: 100%;"
                 ),
-                style="height: 100%; width: 100%; position: relative;",  # Ensure parent has position: relative
+                style="width: 100%; overflow: relative;",  # Ensure parent has position: relative
 
                 id="profilesGrid",
                 x_data="{ profiles: [], loading: true }",
@@ -54,7 +54,7 @@ def profiles_view(session):
                         })
                 """,
             ),
-            style="width: 100%; height: 100%; overflow: auto;"
+            style="height: 100%; width: 100%; position: relative;"
         ),
         profile_popup(),
         Style("""
