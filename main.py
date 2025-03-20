@@ -23,7 +23,9 @@ exception_handlers = {404: not_found,
 
 app, rt = fast_app(live=bool(os.getenv("DEVELOPMENT_MODE", "false").lower() == "true"),
                   secret_key=os.getenv("SESSION_SECRET_KEY"),
-                  hdrs=(plotly_headers, picolink,
+                  hdrs=(
+                    ScriptX(defer=True, fname="static/js/alpine.min.js",),
+                    plotly_headers, picolink,
                     Link(rel="stylesheet", href="/static/css/theme.css", type="text/css"),
                     Link(rel="icon", type="image/x-icon", href="/assets/favicon.svg"),
                     SortableJS('.sortable')),

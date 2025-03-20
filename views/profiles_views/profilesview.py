@@ -1,11 +1,13 @@
 from fasthtml.common import *
 from views.profiles_views.popups.profile_popup import profile_popup
-from views.profiles_views.gridding.grid_table import create_grid_table
 
 def profiles_view(session):
     return Div(
         Div(
             Div(
+                Script(
+                    src="/views/profiles_views/gridding/grid_table.js"
+                ),
                 H2("Profiles", style="margin: 0 0 4px 0;"),
                 Button(
                     Img(src='assets/svgs/User/User_Add.svg', style="margin-right: 8px;"),
@@ -21,16 +23,38 @@ def profiles_view(session):
             ),
             Div(
                 Div(
-                    Div(style="width: 50px; height: 50px; border: 5px solid rgba(255, 255, 255, 0.1); border-top: 5px solid #ffffff; border-radius: 50%; animation: spin 1s linear infinite; box-shadow: 0 4px 30px rgba(0, 0, 0, 0.1);"),
-                    style="display: flex; position: absolute; top: 0; left: 0; width: 100%; height: 100%; justify-content: center; align-items: center; z-index: 1; border-radius: 8px; pointer-events: none;",
-                    id="loading-overlay"
+                    class_="loading-spinner",
+                    style="""
+                        width: 50px; height: 50px; border: 5px solid #f3f3f3;
+                        border-top: 5px solid #f6cd70; border-radius: 50%;
+                        animation: spin 0.7s linear infinite; 
+                        position: absolute;
+                        top: 50%;
+                        left: 50%;
+                        transform: translate(-50%, -50%);
+                        display: none;
+                    """,
+                    x_show="loading"
                 ),
+                Div(
+                    x_html="createGridTable(profiles)",
+                    x_show="!loading",
+                    style="height: 100%; width: 100%;"
+                ),
+                style="height: 100%; width: 100%; position: relative;",  # Ensure parent has position: relative
+
                 id="profilesGrid",
-                hx_get="/api/profiles/get",
-                hx_trigger="load, profileCreated from:body, profileDeleted from:body",
-                hx_swap="innerHTML"
+                x_data="{ profiles: [], loading: true }",
+                x_init="""
+                    fetch('/api/profiles/get')
+                        .then(res => res.json())
+                        .then(data => {
+                            profiles = data.profiles;
+                            loading = false;
+                        })
+                """,
             ),
-            style="width: 100%;"
+            style="width: 100%; height: 100%; overflow: auto;"
         ),
         profile_popup(),
         Style("""

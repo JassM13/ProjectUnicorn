@@ -4,7 +4,6 @@ from google.cloud.firestore import FieldFilter
 from middleware.authorized_request import authorized_request
 from datetime import datetime
 import json
-from views.profiles_views.gridding.grid_table import create_grid_table
 import time
 
 def register_get_profile_routes(rt):
@@ -70,10 +69,6 @@ def register_get_profile_routes(rt):
                 "broker_account": profile_data.get('broker_account', False)
             })
         
-        # Check for API request vs HTMX request
-        is_htmx_request = request and request.headers.get('HX-Request') == 'true'
-        content_type = request and request.headers.get('Accept')
-        
         # Calculate elapsed time
         elapsed_time = time.time() - start_time
         min_response_time = 1  # Minimum response time in seconds
@@ -82,13 +77,7 @@ def register_get_profile_routes(rt):
         if elapsed_time < min_response_time:
             time.sleep(min_response_time - elapsed_time)
         
-        if is_htmx_request or (content_type and 'text/html' in content_type):
-            # Return HTML grid for HTMX requests
-            return create_grid_table(profiles)
-        else:
-            # Return JSON for API requests
-            json_response = json.dumps(profiles)
-            # Create a Response object with the appropriate content-type
-            return Response(json_response, content_type="application/json")
+        # Directly return profiles data as a dictionary
+        return {"profiles": profiles}
         
     return rt
