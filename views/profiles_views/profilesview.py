@@ -19,15 +19,10 @@ def profiles_view(session):
                 ),
                 style="display: flex; align-items: center; justify-content: space-between; margin-bottom: 24px;"
             ),
-            # Instead of embedding the create_grid_table directly, use a Div with hx_get
-            # This will automatically load the grid with the data
             Div(
-                # Display a loading message until HTMX loads the data
-                Div("Loading profiles...", style="text-align: center; padding: 20px;"),
-                # Add a loading indicator
                 Div(
-                    Div(style="width: 50px; height: 50px; border: 5px solid #f3f3f3; border-top: 5px solid #f6cd70; border-radius: 50%; animation: spin 1s linear infinite;"),
-                    style="display: none; position: absolute; top: 0; left: 0; width: 100%; height: 100%; background-color: rgba(0,0,0,0.5); justify-content: center; align-items: center; z-index: 1000;",
+                    Div(style="width: 50px; height: 50px; border: 5px solid rgba(255, 255, 255, 0.1); border-top: 5px solid #ffffff; border-radius: 50%; animation: spin 1s linear infinite; box-shadow: 0 4px 30px rgba(0, 0, 0, 0.1);"),
+                    style="display: flex; position: absolute; top: 0; left: 0; width: 100%; height: 100%; justify-content: center; align-items: center; z-index: 1; border-radius: 8px; pointer-events: none;",
                     id="loading-overlay"
                 ),
                 id="profilesGrid",
@@ -38,8 +33,6 @@ def profiles_view(session):
             style="width: 100%;"
         ),
         profile_popup(),
-        # No script tag needed - using inline hx_on_click instead
-        # Add CSS for spinner animation
         Style("""
             @keyframes spin {
                 0% { transform: rotate(0deg); }
