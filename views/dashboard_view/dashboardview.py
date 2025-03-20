@@ -1,48 +1,49 @@
 from fasthtml.common import *
-from views.dashboard_view.widgets.total_profit import total_profit_widget
-from views.dashboard_view.widgets.chart import chart_widget
-from views.dashboard_view.widgets.stats import stats_widget
-from views.dashboard_view.widgets.progress import progress_widget
 
 def dashboard_view(session):
     return Div(
-        Script(src="/views/dashboard_view/js/swapy.min.js"),
+        Style("""
+            .dashboard-item {
+                opacity: 1;  /* Set opacity to 1 directly */
+            }
+        """),
         Script("""
             document.addEventListener('htmx:load', function() {
-                // Add a small delay to ensure DOM is fully rendered
-                setTimeout(function() {
-                    const container = document.querySelector('.dashboard-container');
-                    if (container) {
-                        window.swapy = Swapy.createSwapy(container, {
-                            draggable: true,
-                            animation: 'dynamic'
-                        });
+                const widgetIds = ['profit', 'progress', 'chart', 'stats'];
+                const loadedWidgets = new Set();
+
+                document.addEventListener('htmx:afterSwap', function(evt) {
+                    if (evt.detail.target.classList.contains('dashboard-item')) {
+                        loadedWidgets.add(evt.detail.target.dataset.swapyItem);
+                        if (loadedWidgets.size === widgetIds.length) {
+                            document.querySelector('.dashboard-container').classList.add('loaded');
+                        }
                     }
-                }, 100);
+                });
             });
         """),
         Div(
             Div(
                 Div(
-                    Div(total_profit_widget(), cls="dashboard-item", data_swapy_item="profit", style="height: 100%; min-height: min(300px, 30vh);"),
+                    Div(cls="dashboard-item", data_swapy_item="profit", hx_get="/api/widgets/profit", hx_trigger="load", hx_swap="innerHTML", style="height: 100%; min-height: min(300px, 30vh);"),
                     cls="dashboard-slot",
                     data_swapy_slot="profit",
                     style="grid-area: profit;"
                 ),
                 Div(
-                    Div(progress_widget(), cls="dashboard-item", data_swapy_item="progress", style="height: 100%; min-height: min(300px, 30vh);"),
+                    Div(cls="dashboard-item", data_swapy_item="progress", hx_get="/api/widgets/progress", hx_trigger="load", hx_swap="innerHTML", style="height: 100%; min-height: min(300px, 30vh);"),
                     cls="dashboard-slot",
                     data_swapy_slot="progress",
                     style="grid-area: progress;"
                 ),
                 Div(
-                    Div(chart_widget(), cls="dashboard-item", data_swapy_item="chart", style="height: 100%; min-height: min(300px, 30vh);"),
+                    Div(cls="dashboard-item", data_swapy_item="chart", hx_get="/api/widgets/chart", hx_trigger="load", hx_swap="innerHTML", style="height: 100%; min-height: min(300px, 30vh);"),
                     cls="dashboard-slot",
                     data_swapy_slot="chart",
                     style="grid-area: chart;"
                 ),
                 Div(
-                    Div(stats_widget(), cls="dashboard-item", data_swapy_item="stats", style="height: 100%; min-height: min(300px, 30vh);"),
+                    Div(cls="dashboard-item", data_swapy_item="stats", hx_get="/api/widgets/stats", hx_trigger="load", hx_swap="innerHTML", style="height: 100%; min-height: min(300px, 30vh);"),
                     cls="dashboard-slot",
                     data_swapy_slot="stats",
                     style="grid-area: stats;"

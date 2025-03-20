@@ -88,7 +88,7 @@ def subscription_popup(session):
                         P("/month", style="color: #888; margin: 0 0 24px 0;"),
                         Ul(
                             Li("Everything in Pro"),
-                            Li("Unlimited Profiles"),
+                            Li("Up to 20 Profiles"),
                             Li("Advanced Analytics"),
                             Li("Priority Support"),
                             style="list-style: none; padding: 0; margin: 0 0 24px 0; color: #ddd; overflow: hidden;"

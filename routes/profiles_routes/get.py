@@ -5,6 +5,7 @@ from middleware.authorized_request import authorized_request
 from datetime import datetime
 import json
 from views.profiles_views.gridding.grid_table import create_grid_table
+import time
 
 def register_get_profile_routes(rt):
     firebase_manager = FirebaseManager.getInstance()
@@ -12,6 +13,7 @@ def register_get_profile_routes(rt):
     @rt("/api/profiles/get")
     @authorized_request
     def get_profiles(session, request=None):
+        start_time = time.time()  # Record the start time
         profiles = []
         
         if not session or not session.get('user_id'):
@@ -71,6 +73,14 @@ def register_get_profile_routes(rt):
         # Check for API request vs HTMX request
         is_htmx_request = request and request.headers.get('HX-Request') == 'true'
         content_type = request and request.headers.get('Accept')
+        
+        # Calculate elapsed time
+        elapsed_time = time.time() - start_time
+        min_response_time = 1  # Minimum response time in seconds
+        
+        # Introduce artificial delay if response is ready too fast
+        if elapsed_time < min_response_time:
+            time.sleep(min_response_time - elapsed_time)
         
         if is_htmx_request or (content_type and 'text/html' in content_type):
             # Return HTML grid for HTMX requests
