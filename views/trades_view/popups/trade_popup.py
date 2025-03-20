@@ -20,95 +20,118 @@ def trade_popup():
                 H2("Add New Trade", style="margin: 0 0 20px 0; color: #f6cd70;"),
                 
                 Form(
-                    # Trade Type Selection
+                    # Two-column layout container
                     Div(
-                        Label("Trade Type", style="color: white; display: block; margin-bottom: 8px;"),
+                        # Left column - Trade details
                         Div(
-                            Button("Buy", 
-                                id="buy_btn",
-                                type="button", 
-                                cls="trade-type-btn selected",
-                                hx_on_click="htmx.toggleClass(this, 'selected'); htmx.toggleClass(document.getElementById('sell_btn'), 'selected'); document.getElementById('trade_type').value='buy'",
-                                style="border-radius: 8px 0 0 8px;"
+                            # Trade Type Selection
+                            Div(
+                                Label("Trade Type", style="color: white; display: block; margin-bottom: 8px;"),
+                                Div(
+                                    Button("Buy", 
+                                        id="buy_btn",
+                                        type="button", 
+                                        cls="trade-type-btn selected",
+                                        hx_on_click="htmx.toggleClass(this, 'selected'); htmx.toggleClass(document.getElementById('sell_btn'), 'selected'); document.getElementById('trade_type').value='buy'",
+                                        style="border-radius: 8px 0 0 8px;"
+                                    ),
+                                    Button("Sell", 
+                                        id="sell_btn",
+                                        type="button", 
+                                        cls="trade-type-btn",
+                                        hx_on_click="htmx.toggleClass(this, 'selected'); htmx.toggleClass(document.getElementById('buy_btn'), 'selected'); document.getElementById('trade_type').value='sell'",
+                                        style="border-radius: 0 8px 8px 0;"
+                                    ),
+                                    Input(type="hidden", name="trade_type", id="trade_type", value="buy"),
+                                    style="display: flex; margin-bottom: 16px;"
+                                ),
                             ),
-                            Button("Sell", 
-                                id="sell_btn",
-                                type="button", 
-                                cls="trade-type-btn",
-                                hx_on_click="htmx.toggleClass(this, 'selected'); htmx.toggleClass(document.getElementById('buy_btn'), 'selected'); document.getElementById('trade_type').value='sell'",
-                                style="border-radius: 0 8px 8px 0;"
+                            
+                            # Instrument Type Selection - Dropdown
+                            Div(
+                                Label("Instrument Type", style="color: white; display: block; margin-bottom: 8px;"),
+                                Select(
+                                    Option("Stocks", value="stocks", selected=True),
+                                    Option("Forex", value="forex"),
+                                    Option("Futures", value="futures"),
+                                    Option("Crypto", value="crypto"),
+                                    name="instrument_type",
+                                    id="instrument_type",
+                                    cls="trade-input",
+                                    style="margin-bottom: 16px;"
+                                ),
                             ),
-                            Input(type="hidden", name="trade_type", id="trade_type", value="buy"),
-                            style="display: flex; margin-bottom: 16px;"
+                            
+                            # Symbol Input
+                            Div(
+                                Label("Symbol", style="color: white; display: block; margin-bottom: 8px;"),
+                                Input(
+                                    type="text", 
+                                    name="symbol", 
+                                    placeholder="e.g. AAPL", 
+                                    required=True,
+                                    cls="trade-input"
+                                ),
+                                style="margin-bottom: 16px;"
+                            ),
+                            
+                            # Price and Quantity
+                            Div(
+                                Div(
+                                    Label("Price ($)", style="color: white; display: block; margin-bottom: 8px;"),
+                                    Input(
+                                        type="number", 
+                                        name="price", 
+                                        step="0.01",
+                                        min="0.01",
+                                        placeholder="0.00", 
+                                        required=True,
+                                        cls="trade-input"
+                                    ),
+                                    style="flex: 1; margin-right: 12px;"
+                                ),
+                                Div(
+                                    Label("Quantity", style="color: white; display: block; margin-bottom: 8px;"),
+                                    Input(
+                                        type="number", 
+                                        name="quantity",
+                                        min="1",
+                                        step="1", 
+                                        placeholder="0", 
+                                        required=True,
+                                        cls="trade-input"
+                                    ),
+                                    style="flex: 1;"
+                                ),
+                                style="display: flex; margin-bottom: 16px;"
+                            ),
+                            
+                            # Date and Time
+                            Div(
+                                Label("Date & Time", style="color: white; display: block; margin-bottom: 8px;"),
+                                Input(
+                                    type="datetime-local", 
+                                    name="datetime", 
+                                    required=True,
+                                    cls="trade-input"
+                                ),
+                                style="margin-bottom: 16px;"
+                            ),
+                            style="flex: 1; margin-right: 16px;"
                         ),
-                    ),
-                    
-                    # Symbol Input
-                    Div(
-                        Label("Symbol", style="color: white; display: block; margin-bottom: 8px;"),
-                        Input(
-                            type="text", 
-                            name="symbol", 
-                            placeholder="e.g. AAPL", 
-                            required=True,
-                            cls="trade-input"
-                        ),
-                        style="margin-bottom: 16px;"
-                    ),
-                    
-                    # Price and Quantity
-                    Div(
+                        
+                        # Right column - Notes
                         Div(
-                            Label("Price ($)", style="color: white; display: block; margin-bottom: 8px;"),
-                            Input(
-                                type="number", 
-                                name="price", 
-                                step="0.01",
-                                min="0.01",
-                                placeholder="0.00", 
-                                required=True,
-                                cls="trade-input"
+                            Label("Notes", style="color: white; display: block; margin-bottom: 8px;"),
+                            Textarea(
+                                name="notes",
+                                placeholder="Add any trade notes here...",
+                                cls="trade-input",
+                                style="min-height: 100%; resize: vertical; resize: none;"
                             ),
-                            style="flex: 1; margin-right: 12px;"
+                            style="flex: 1; display: flex; flex-direction: column;"
                         ),
-                        Div(
-                            Label("Quantity", style="color: white; display: block; margin-bottom: 8px;"),
-                            Input(
-                                type="number", 
-                                name="quantity",
-                                min="1",
-                                step="1", 
-                                placeholder="0", 
-                                required=True,
-                                cls="trade-input"
-                            ),
-                            style="flex: 1;"
-                        ),
-                        style="display: flex; margin-bottom: 16px;"
-                    ),
-                    
-                    # Date and Time
-                    Div(
-                        Label("Date & Time", style="color: white; display: block; margin-bottom: 8px;"),
-                        Input(
-                            type="datetime-local", 
-                            name="datetime", 
-                            required=True,
-                            cls="trade-input"
-                        ),
-                        style="margin-bottom: 16px;"
-                    ),
-                    
-                    # Notes
-                    Div(
-                        Label("Notes", style="color: white; display: block; margin-bottom: 8px;"),
-                        Textarea(
-                            name="notes",
-                            placeholder="Add any trade notes here...",
-                            cls="trade-input",
-                            style="min-height: 80px; resize: vertical;"
-                        ),
-                        style="margin-bottom: 20px;"
+                        style="display: flex; margin-bottom: 20px;"
                     ),
                     
                     # Response message area
@@ -181,7 +204,7 @@ def trade_popup():
                 padding: 24px;
                 border-radius: 16px;
                 width: 90%;
-                max-width: 500px;
+                max-width: 80%;
                 position: fixed;
                 left: 50%;
                 top: 50%;
@@ -310,4 +333,4 @@ def trade_popup():
             .trade-form-container.show form > div:nth-child(6) { animation-delay: 0.35s; }
             .trade-form-container.show form > div:nth-child(7) { animation-delay: 0.4s; }
         """)
-    ) 
+    )
