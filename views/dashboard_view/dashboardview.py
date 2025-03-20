@@ -1,4 +1,5 @@
 from fasthtml.common import *
+from views.dashboard_view.widgets.chartist import chart_widget
 
 def dashboard_view(session):
     return Div(
@@ -36,8 +37,14 @@ def dashboard_view(session):
                     data_swapy_slot="progress",
                     style="grid-area: progress;"
                 ),
+                #Div(
+                #    Div(cls="dashboard-item", data_swapy_item="chart", hx_get="/api/widgets/chart", hx_trigger="load", hx_swap="innerHTML", style="height: 100%; min-height: min(300px, 30vh);"),
+                #    cls="dashboard-slot",
+                #    data_swapy_slot="chart",
+                #    style="grid-area: chart;"
+                #),
                 Div(
-                    Div(cls="dashboard-item", data_swapy_item="chart", hx_get="/api/widgets/chart", hx_trigger="load", hx_swap="innerHTML", style="height: 100%; min-height: min(300px, 30vh);"),
+                    Div(chart_widget(), style="height: 100%; min-height: min(300px, 30vh);"),
                     cls="dashboard-slot",
                     data_swapy_slot="chart",
                     style="grid-area: chart;"

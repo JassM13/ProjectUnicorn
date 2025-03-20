@@ -5,10 +5,11 @@ def profiles_view(session):
     return Div(
         Div(
             Div(
+                Script(
+                    src="/views/profiles_views/gridding/grid_table.js", defer=True
+                ),
+                Script(defer=True, src="static/js/alpine.min.js"),
                 Div(
-                    Script(
-                        src="/views/profiles_views/gridding/grid_table.js"
-                    ),
                     H2("Profiles", style="margin: 0 0 4px 0;"),
                     Button(
                         Img(src='assets/svgs/User/User_Add.svg', style="margin-right: 8px;"),
@@ -37,7 +38,7 @@ def profiles_view(session):
                     x_show="loading"
                 ),
                 Div(
-                    x_html="createGridTable(profiles)",
+                    x_html="await createGridTable(profiles)",
                     x_show="!loading",
                     style="width: 100%;"
                 ),
