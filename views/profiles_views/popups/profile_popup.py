@@ -68,13 +68,11 @@ def profile_popup():
                     hx_target="#profile_form_alert",
                     hx_swap="innerHTML",
                     hx_on_after_request="""
-                        if(event.detail.successful && event.detail.xhr.responseText.includes('successfully')) {
-                            setTimeout(function() {
-                                document.getElementById('profile_modal_overlay').classList.remove('show');
-                                document.getElementById('profile_form_container').classList.remove('show');
-                                document.getElementById('profile_form').reset();
-                                document.body.dispatchEvent(new CustomEvent('profileCreated'));
-                            }, 1500);
+                        if(event.detail.successful) {
+                            setTimeout(() => {
+                                document.body.dispatchEvent(new CustomEvent('profile-added'));
+                                Alpine.store('notifications').show('Profile added successfully', 'success');
+                            }, 500);
                         }
                     """
                 ),

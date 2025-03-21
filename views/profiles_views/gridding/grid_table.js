@@ -1,6 +1,6 @@
 function createGridTable(data) {
-    if (!data.length) {
-        return ''; // Return an empty string if no data is available
+    if (!data || !Array.isArray(data) || !data.length) {
+        return ''; // Return an empty string if no data is available or not an array
     }
 
     const headers = ['Name', 'Trades', 'Last Updated', 'Broker Account', 'Actions'];
@@ -60,17 +60,23 @@ function showDeleteDialog(button, profileName, profileId) {
         <div style="display: flex; justify-content: flex-end; gap: 12px;">
             <button class="cancel" style="padding: 12px 24px; border: none; border-radius: 8px; cursor: pointer; font-weight: 600; background: #333; color: white; transition: all 0.3s ease;">Cancel</button>
             <button class="confirm" style="padding: 12px 24px; border: none; border-radius: 8px; cursor: pointer; font-weight: 800; background: #f6cd70; color: black; transition: all 0.3s ease;"
-            @click="fetch('/api/profiles/delete/${profileId}', { 
+            @click="
+                fetch('/api/profiles/delete/${profileId}', { 
                     method: 'DELETE'
                 })
                 .then(res => res.json())
                 .then(data => {
-                    console.log('Profile deleted:', data);
+                    // Dispatch the profile-deleted event to trigger the refresh
+                    document.body.dispatchEvent(new CustomEvent('profile-deleted'));
                 })
-                .catch(error => console.error('Error:', error));"
+                .catch(error => console.error('Error deleting profile:', error));
+            "
             >Delete</button>
         </div>
     `;
+
+    function deleteProfile(profileId) {
+    }
     
     dialog.appendChild(content);
     document.body.appendChild(dialog);
@@ -97,6 +103,21 @@ function showDeleteDialog(button, profileName, profileId) {
         htmx.trigger(button, 'confirmed');
         closeDialog();
     };
+
+    // Add event listener for profile updates
+    document.body.addEventListener('profile-deleted', refreshProfiles);
+
+    function refreshProfiles() {
+        fetch('/api/profiles/get')
+            .then(res => res.json())
+            .then(data => {
+                const profilesGrid = document.getElementById('profilesGrid');
+                if (profilesGrid && profilesGrid._x_dataStack) {
+                    profilesGrid._x_dataStack[0].profiles = data.profiles;
+                }
+            })
+            .catch(error => console.error('Error refreshing profiles:', error));
+    }
     
     dialog.onclick = (e) => {
         if (e.target === dialog) closeDialog();

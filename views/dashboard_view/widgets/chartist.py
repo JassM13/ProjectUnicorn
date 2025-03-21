@@ -2,7 +2,7 @@ from fasthtml.common import *
 def chart_widget():
     return Card(
         Link(rel="stylesheet", href="//cdn.jsdelivr.net/chartist.js/latest/chartist.min.css", type="text/css"),
-        Script(src="//cdn.jsdelivr.net/chartist.js/latest/chartist.min.js"),
+        Script(src="//cdn.jsdelivr.net/chartist.js/latest/chartist.min.js", _async=False, defer=False),
         Div(
             cls="chart",
             id="chart",

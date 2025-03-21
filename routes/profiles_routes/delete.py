@@ -37,10 +37,10 @@ def register_delete_profile_routes(rt):
             # Delete the profile
             profile_ref.delete()
             
-            return Div(
-                "Profile deleted successfully!",
-                style="background-color: #4CAF50; color: white; padding: 10px; border-radius: 5px;"
-            )
+            return {
+                "status": "success",
+                "message": "Profile deleted successfully!"
+            }
         except Exception as e:
             return Div(
                 f"Error deleting profile: {str(e)}",

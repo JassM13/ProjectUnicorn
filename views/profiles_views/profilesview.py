@@ -1,14 +1,60 @@
 from fasthtml.common import *
 from views.profiles_views.popups.profile_popup import profile_popup
 
+def notification_component():
+    return Div(
+        id="notification",
+        style="""position: fixed; bottom: 20px; right: 20px; padding: 16px;
+               border-radius: 8px; color: white; font-weight: 500;
+               transform: translateY(150%); transition: transform 0.3s ease-in-out;
+               z-index: 9999;""",
+        x_data="{ notification: { show: false, message: '', type: '' } }",
+        x_show="notification.show",
+        x_transition__enter="transition ease-in duration-300",
+        x_transition__enter_start="opacity-0 transform translate-y-4",
+        x_transition__enter_end="opacity-100 transform translate-y-0",
+        x_transition__leave="transition ease-in duration-300",
+        x_transition__leave_start="opacity-100 transform translate-y-0",
+        x_transition__leave_end="opacity-0 transform translate-y-4",
+        x_text="notification.message",
+        x_bind_class="notification.type === 'success' ? 'bg-green-500' : 'bg-red-500'"
+    )
+
 def profiles_view(session):
     return Div(
+        Script(
+            src="/views/profiles_views/gridding/grid_table.js", defer=True
+        ),
+        Script(defer=True, src="static/js/alpine.min.js"),
+        Script(f"""
+            document.addEventListener('alpine:init', () => {{
+                Alpine.store('notifications', {{
+                    show(message, type) {{
+                        Alpine.store('notifications').$data = {{ 
+                            show: true, 
+                            message: message,
+                            type: type
+                        }};
+                        setTimeout(() => Alpine.store('notifications').hide(), 3000);
+                    }},
+                    hide() {{
+                        Alpine.store('notifications').$data.show = false;
+                    }}
+                }});
+            }});
+
+            // Event listeners for profile actions
+            document.body.addEventListener('profile-added', (e) => {{
+                Alpine.store('notifications').show('Profile added successfully', 'success');
+            }});
+
+            document.body.addEventListener('profile-deleted', (e) => {{
+                Alpine.store('notifications').show('Profile deleted successfully', 'success');
+            }});
+        """),
+        notification_component(),
         Div(
             Div(
-                Script(
-                    src="/views/profiles_views/gridding/grid_table.js", defer=True
-                ),
-                Script(defer=True, src="static/js/alpine.min.js"),
                 Div(
                     H2("Profiles", style="margin: 0 0 4px 0;"),
                     Button(
